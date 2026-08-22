@@ -5,6 +5,11 @@ CarmaR/R session and return output inline.
 
 Live site: <https://mohsaqr.github.io/carmar-runnable-book-poc/>
 
+Chapter 15 proof: <https://mohsaqr.github.io/carmar-runnable-book-poc/chapters/ch15-tna/ch15-tna.html>
+
+The Chapter 15 page is built from the original
+[`ch15-tna.qmd`](https://github.com/lamethods/lamethods.github.io/blob/master/book2/chapters/ch15-tna/ch15-tna.qmd).
+
 Install the current CarmaR app once, then use **Run on my computer** on the
 published page. The app starts/authorizes the local kernel through `carmar://`;
 the page connects directly and renders CarmaR's own editors, outputs and

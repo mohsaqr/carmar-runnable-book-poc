@@ -7,6 +7,8 @@ website:
     left:
       - href: index.qmd
         text: Live chapter
+      - href: chapters/ch15-tna/ch15-tna.qmd
+        text: Chapter 15 · TNA
     right:
       - href: https://github.com/mohsaqr/CarmaR/tree/feature/quarto-run-on-computer
         text: CarmaR source

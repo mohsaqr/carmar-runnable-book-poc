@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Mohammed Saqr">
+<meta name="author" content="Sonsoles López-Pernas">
+<meta name="author" content="Santtu Tikka">
+<meta name="keywords" content="learning analytics, transition network analysis, stochastic process mining, Markov models">
+
+<title>Mapping Relational Dynamics with Transition Network Analysis: A Primer and Tutorial – CarmaR Runnable Book Proof</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6388ad00bb6ecaefa25b9a98db1edf18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/carmar-published-0.1.0/carmar-publish.js"></script>
+<link href="../../site_libs/quarto-contrib/carmar-published-0.1.0/carmar-publish.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<meta name="carmar-port" content="4747">
+<meta name="carmar-label" content="Run on my computer">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">CarmaR Runnable Book Proof</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Live chapter</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../chapters/ch15-tna/ch15-tna.html" aria-current="page"> 
+<span class="menu-text">Chapter 15 · TNA</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/mohsaqr/CarmaR/tree/feature/quarto-run-on-computer"> 
+<span class="menu-text">CarmaR source</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#why-tna" id="toc-why-tna" class="nav-link" data-scroll-target="#why-tna">Why TNA?</a></li>
+  <li><a href="#the-theoretical-grounding-of-tna" id="toc-the-theoretical-grounding-of-tna" class="nav-link" data-scroll-target="#the-theoretical-grounding-of-tna">The theoretical grounding of TNA</a></li>
+  <li><a href="#the-building-blocks-of-tna" id="toc-the-building-blocks-of-tna" class="nav-link" data-scroll-target="#the-building-blocks-of-tna">The building blocks of TNA</a>
+  <ul class="collapse">
+  <li><a href="#network-representation" id="toc-network-representation" class="nav-link" data-scroll-target="#network-representation">Network Representation</a></li>
+  <li><a href="#mathematical-grounding-of-tna" id="toc-mathematical-grounding-of-tna" class="nav-link" data-scroll-target="#mathematical-grounding-of-tna">Mathematical grounding of TNA</a></li>
+  <li><a href="#tna-features" id="toc-tna-features" class="nav-link" data-scroll-target="#tna-features">TNA features</a></li>
+  </ul></li>
+  <li><a href="#tutorial-of-tna-with-r" id="toc-tutorial-of-tna-with-r" class="nav-link" data-scroll-target="#tutorial-of-tna-with-r">Tutorial of TNA with R</a>
+  <ul class="collapse">
+  <li><a href="#building-tna-model" id="toc-building-tna-model" class="nav-link" data-scroll-target="#building-tna-model">Building <code>tna</code> Model</a></li>
+  <li><a href="#plotting-and-interpreting-tna-models" id="toc-plotting-and-interpreting-tna-models" class="nav-link" data-scroll-target="#plotting-and-interpreting-tna-models">Plotting and interpreting <code>tna</code> models</a></li>
+  <li><a href="#patterns-1" id="toc-patterns-1" class="nav-link" data-scroll-target="#patterns-1">Patterns</a></li>
+  <li><a href="#network-inference" id="toc-network-inference" class="nav-link" data-scroll-target="#network-inference">Network inference</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Mapping Relational Dynamics with Transition Network Analysis: A Primer and Tutorial</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mohammed Saqr </p>
+             <p>Sonsoles López-Pernas </p>
+             <p>Santtu Tikka </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    This chapter presents Transition Network Analysis (TNA) that captures the full breadth of the relational dynamics of a temporal process. TNA models transitions between events as a weighted directed network. In doing so, TNA brings the wealth of network analysis to the modeled process which include graph, node and edge level metrics. TNA also enables the detection of recurring patterns such as dyads or triads, and communities and clusters. More importantly, TNA allows researchers to statistically validate the findings using bootstrapping, permutation, and case dropping techniques to verify if and when the research conclusions are correct. Furthermore, TNA allows researchers to include covariates that would explain why certain patterns emerge or examine the differences across subgroups. Such statistical rigor that brings validation and hypothesis testing at each step of the analysis offers a method for researchers to build, verify and advance existing theories and develop new ones on the basis of a robust scientific approach. This chapter offers a step-by-step tutorial using the <code>tna</code> R package, illustrating all the TNA features in a case study about group regulation.
+  </div>
+</div>
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>learning analytics, transition network analysis, stochastic process mining, Markov models</p>
+  </div>
+</div>
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>As a concept, transition networks were proposed in the seventies by the pioneering work of Schnakenberg <span class="citation" data-cites="schnakenberg1976">(<a href="#ref-schnakenberg1976" role="doc-biblioref">Schnakenberg 1976</a>)</span>. More recently, they have become more recognized across several fields to harness their potentials for capturing the relational and temporal dynamic systems <span class="citation" data-cites="Nicolis2005-vu">Zou et al. (<a href="#ref-Zou2019-ss" role="doc-biblioref">2019</a>)</span>. Nevertheless, despite the needs and potential, they have not been visible in education. In this chapter, we introduce transition network analysis (TNA) as a novel method that captures the temporal and relational aspects of an unfolding process. The main principle of TNA is representing the transition matrix between events as a graph to take full advantage of graph theory potentials and the wealth of potential of network analysis <span class="citation" data-cites="Saqr2024 tna">(<a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>, <a href="#ref-tna" role="doc-biblioref">2024b</a>)</span>.</p>
+<p>Think of it as a combination of process mining and network analysis where a process map is represented and analyzed by network analysis—but of course, TNA is far richer than this. In TNA, network analysis is applied to capture the structure, time and relationships in a holistic way. For process mining models, TNA adds network measures at the node, edge and graph level which tells us what events were important (centrality measures), what transitions were central (edge centralities), and which processes are more connected (e.g., graph density) <span class="citation" data-cites="helske2024">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>)</span>. TNA also adds community finding as well as pattern mining e.g., triads and dyads to capture patterns within the process. For network analysis, TNA brings clustering of sub-networks or different network constellations of typical temporal events which is commonly referred to as tactics. Furthermore, TNA can model covariates to explain certain patterns which is not a common method in network analysis (note that co-variates are not covered in this chapter) <span class="citation" data-cites="helske2024">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>)</span>. Furthermore, TNA offers far more than a combination of either methods and includes several innovative techniques of its own which include edge verification using bootstrapping and network comparison with permutation, as well as centrality verification through case-dropping. These statistical techniques bring rigor and validation at each edge level, so we can now be sure which edge is likely to replicate in the future and that our inferences and models are valid and not just a chance <span class="citation" data-cites="Saqr2024 tna">(<a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>, <a href="#ref-tna" role="doc-biblioref">2024b</a>)</span>.</p>
+</section>
+<section id="why-tna" class="level2">
+<h2 class="anchored" data-anchor-id="why-tna">Why TNA?</h2>
+<p>Learning is a process that can be best conceptualized as a complex dynamic system <span class="citation" data-cites="Hilpert2018-mu Kaplan2020-kz Saqr2024-ti">(<a href="#ref-Hilpert2018-mu" role="doc-biblioref">Hilpert and Marchand 2018</a>; <a href="#ref-Kaplan2020-kz" role="doc-biblioref">Kaplan and Garner 2020</a>; <a href="#ref-Saqr2024-ti" role="doc-biblioref">Saqr, Schreuder, et al. 2024</a>)</span>. Such a system is a collection of interconnected components that interact over time, where interactions can enhance, impede, amplify, or reinforce each other <span class="citation" data-cites="Saqr2024-lv">(<a href="#ref-Saqr2024-lv" role="doc-biblioref">Saqr and López-Pernas 2024</a>)</span>. These dynamic interactions lead to the emergence of behaviors that cannot be fully understood by analyzing individual components in isolation. Often, the interactions result in processes that are more than the simple sum of their parts which is referred to as non-linear dynamics <span class="citation" data-cites="Hilpert2018-mu Kaplan2020-kz">(<a href="#ref-Hilpert2018-mu" role="doc-biblioref">Hilpert and Marchand 2018</a>; <a href="#ref-Kaplan2020-kz" role="doc-biblioref">Kaplan and Garner 2020</a>)</span> (see <a href="#fig-interaction-dominant" class="quarto-xref">Figure&nbsp;1</a>). For instance, motivation catalyzes achievement which in turn catalyzes more engagement, enjoyment and motivation. These interdependence, feedback loops and non-linear dynamics are inherently complex and therefore, require a modeling method that goes beyond the traditional linear models which assume that relationships between processes are stable and predictable <span class="citation" data-cites="Hilpert2018-mu">(<a href="#ref-Hilpert2018-mu" role="doc-biblioref">Hilpert and Marchand 2018</a>)</span>. TNA as a dynamic probabilistic model, offers a solution that captures the uncertainties through directional probabilities between learning events and accommodates the non-linear, evolving nature of learning processes. It also captures the constellations or the emergent patterns that define or shape the learning process <span class="citation" data-cites="Zou2019-ss">(<a href="#ref-Zou2019-ss" role="doc-biblioref">Zou et al. 2019</a>)</span>.</p>
+<div id="fig-interaction-dominant" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-interaction-dominant-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="img/interaction-dominant.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-interaction-dominant-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Figure</strong>&nbsp;1<strong>.</strong> Interaction dominant versus component dominant dynamics
+</figcaption>
+</figure>
+</div>
+<p>Probabilistic processes are commonly —and indeed best— represented mathematically as matrices, where rows represent nodes and columns denote direct probabilistic interactions between them <span class="citation" data-cites="Newman2018-vp Koller2009-kv">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>; <a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>)</span>. Moreover, matrices are the mathematical foundation of networks <span class="citation" data-cites="Newman2018-vp">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>)</span>. Therefore, matrices and networks, particularly probabilistic networks, are a natural fit that are conceptually and mathematically aligned. As such, using network models to represent probabilistic processes has become a very common practice <span class="citation" data-cites="Koller2009-kv">(<a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>)</span>. For instance, several probabilistic network disciplines have recently become popular e.g., psychological networks. Also, similar to TNA, similar probabilistic directed transition models have been proposed and empirically validated in various fields such as Markovian network models and dynamic network models from Markov process data <span class="citation" data-cites="schnakenberg1976 Nicolis2005-vu Zou2019-ss">(<a href="#ref-schnakenberg1976" role="doc-biblioref">Schnakenberg 1976</a>; <a href="#ref-Nicolis2005-vu" role="doc-biblioref">Nicolis et al. 2005</a>; <a href="#ref-Zou2019-ss" role="doc-biblioref">Zou et al. 2019</a>)</span>.</p>
+<p>Despite TNA demonstrated fit and alignment, an integrated framework that takes advantage of transition data, their relational and temporal interactions and the mathematical potential of matrix representations—as TNA does—has not been fully embraced or extended within educational research. TNA as an approach, not only aligns with established practices in other disciplines but also enhances the analytics repertoire for researchers by giving the power and interpretability to complex educational data and contributing to theory and rigor <span class="citation" data-cites="Saqr2024">(<a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>)</span>.</p>
+</section>
+<section id="the-theoretical-grounding-of-tna" class="level2">
+<h2 class="anchored" data-anchor-id="the-theoretical-grounding-of-tna">The theoretical grounding of TNA</h2>
+<p>TNA uses stochastic process modeling to capture the dynamics of the learning process, namely, Markov models <span class="citation" data-cites="Nicolis2005-vu">(<a href="#ref-Nicolis2005-vu" role="doc-biblioref">Nicolis et al. 2005</a>)</span>. Markov models align well with the view that the learning process is an outcome of a stochastic data generating process that led to the overall configuration of the process that we observe <span class="citation" data-cites="Reimann2009-ah Reimann2019-ry Winne2000-mo">(<a href="#ref-Reimann2009-ah" role="doc-biblioref">Reimann 2009</a>, <a href="#ref-Reimann2019-ry" role="doc-biblioref">2019</a>; <a href="#ref-Winne2000-mo" role="doc-biblioref">Winne and Perry 2000</a>)</span>. The data-generating process is what produces various network configurations or patterns based on rules,&nbsp;constraints, or guiding principles—for instance, self-regulation. This means that while the system operates within certain boundaries defined by the framework or principle, the specific ways in which it changes or evolves is rather random and therefore can’t be strictly determined <span class="citation" data-cites="Reimann2019-ry helske2024">(<a href="#ref-Reimann2019-ry" role="doc-biblioref">Reimann 2019</a>; <a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>)</span>. That is, the transitions are governed by a stochastic process. The stochastic nature of changes introduces variability, making the system’s precise future states unpredictable but statistically describable <span class="citation" data-cites="Reimann2019-ry">(<a href="#ref-Reimann2019-ry" role="doc-biblioref">Reimann 2019</a>)</span>.</p>
+<p>Therefore, to capture the data generating process and given that the data generating process is partly random (i.e., stochastic), it can be statistically modeled using probability theory <span class="citation" data-cites="Koller2009-kv Zou2019-ss Reimann2019-ry">(<a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>; <a href="#ref-Zou2019-ss" role="doc-biblioref">Zou et al. 2019</a>; <a href="#ref-Reimann2019-ry" role="doc-biblioref">Reimann 2019</a>)</span>. That is, a method that assumes that events are probabilistically dependent on the preceding ones like Markov models. This view has been entertained by several theorists across the years who described such stochastic process, e.g., <span class="citation" data-cites="Reimann2009-ah Reimann2019-ry Winne2000-mo">(<a href="#ref-Reimann2009-ah" role="doc-biblioref">Reimann 2009</a>, <a href="#ref-Reimann2019-ry" role="doc-biblioref">2019</a>; <a href="#ref-Winne2000-mo" role="doc-biblioref">Winne and Perry 2000</a>)</span>. For instance, Winne and Perry conceptualized the dynamics of self-regulation through three interconnected levels: occurrence, contingency, and patterns—that together depict how the learning process unfolds <span class="citation" data-cites="Winne2000-mo">Winne and Perry (<a href="#ref-Winne2000-mo" role="doc-biblioref">2000</a>)</span>.</p>
+<ul>
+<li><p><strong>Occurrences</strong> are states, events or actions, such as discussion moves or parts of learning tasks or any learning activity a student makes during learning. Occurrences are the building blocks of the learning process, the events and the elements that make up the full structure. Occurrences are represented as nodes in TNA.</p></li>
+<li><p><strong>Contingencies</strong> represent the sequential dependency or possibility of transitions between events and how certain actions lead to or follow others. For example, after a learner reads a note on a particular topic, she reviews those notes (another occurrences). Contingency is the recording of the transition event or the transition probability when the student moves between two events. This contingency is represented as edges in TNA.</p></li>
+<li><p><strong>Patterns</strong> are the recurring combinations of occurrences and contingencies that emerge throughout the learning process. Patterns represent consistent behaviors that typify a learner’s approach to studying or learning. For instance, a pattern might show that a student repeatedly engages in self-evaluation after studying a lesson (contingency). According to Winne <span class="citation" data-cites="winne2010">(<a href="#ref-winne2010" role="doc-biblioref">Winne 2010</a>)</span>, “researchers assume mental operations generate behavior, and those cognitive and meta cognitive events are what theories seek to account for” (p.&nbsp;272). In other words, patterns are the hall mark of the data generation process and the backbone of the structure. After all, a learning process is made of several units, some of which are prominent and repetitive giving it the shape and form it is.</p></li>
+</ul>
+</section>
+<section id="the-building-blocks-of-tna" class="level2">
+<h2 class="anchored" data-anchor-id="the-building-blocks-of-tna">The building blocks of TNA</h2>
+<p>The building blocks of TNA are the transitions between events that make up the transition process. A transition is a conditional relationship between an <em>occurrence</em> and another <em>occurrence</em>, from A <span class="math inline">\(\rightarrow\)</span> B (or a <em>contingency</em>) <span class="citation" data-cites="Zou2019-ss Winne2000-mo">(<a href="#ref-Zou2019-ss" role="doc-biblioref">Zou et al. 2019</a>; <a href="#ref-Winne2000-mo" role="doc-biblioref">Winne and Perry 2000</a>)</span><em>.</em> TNA models these transition in sequential data to compute the transition probability between events <span class="citation" data-cites="Zou2019-ss Nicolis2005-vu">(<a href="#ref-Zou2019-ss" role="doc-biblioref">Zou et al. 2019</a>; <a href="#ref-Nicolis2005-vu" role="doc-biblioref">Nicolis et al. 2005</a>)</span>.The result is a transition matrix that is represented as a weighted directed network where the weights are the transition probabilities from an event to the other and the direction represents the direction of these transitions <span class="citation" data-cites="Zou2019-ss Nicolis2005-vu">(<a href="#ref-Zou2019-ss" role="doc-biblioref">Zou et al. 2019</a>; <a href="#ref-Nicolis2005-vu" role="doc-biblioref">Nicolis et al. 2005</a>)</span>.</p>
+<p>Let us see an example of an imaginary transition matrix representing students learning process. We have five learning activities or <em>occurrences</em> (e.g., <em>Watch Video</em>, <em>Quiz</em>, <em>Read Materials</em>, <em>Submit Assignment</em>, and <em>Feedback</em>). The <em>contingencies</em> are the transitions between these occurrences or the probability of a student moving from one activity to another. We can see that transitioning from <em>Watch Video</em> to <em>Quiz</em> occurred 60 out of 100 times which gives us an estimated probability of 0.60 to move from <em>Watch Video</em> to <em>Quiz</em> (or contingency) (<a href="#tbl-occurrences" class="quarto-xref">Table&nbsp;1</a>). We also see each time a student starts a quiz, they did <em>Submit Assignment</em> which represents an estimated probability of 1 (<a href="#fig-complex-network" class="quarto-xref">Figure&nbsp;2</a>).</p>
+<div style="page-break-after: always;"></div>
+<div id="tbl-occurrences" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-occurrences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1<strong>.</strong> Frequency of transitions between occurrences
+</figcaption>
+<div aria-describedby="tbl-occurrences-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">From</th>
+<th style="text-align: left;">To</th>
+<th style="text-align: right;">Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Watch Video</td>
+<td style="text-align: left;">Quiz</td>
+<td style="text-align: right;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Watch Video</td>
+<td style="text-align: left;">Read Materials</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Quiz</td>
+<td style="text-align: left;">Submit Assignment</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Read Materials</td>
+<td style="text-align: left;">Submit Assignment</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Read Materials</td>
+<td style="text-align: left;">Feedback</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Read Materials</td>
+<td style="text-align: left;">Quiz</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Submit Assignment</td>
+<td style="text-align: left;">Feedback</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Watch Video</td>
+<td style="text-align: left;">Feedback</td>
+<td style="text-align: right;">30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<div id="fig-complex-network" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-complex-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="complex_network.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-complex-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Figure</strong>&nbsp;2<strong>.</strong> A visualization of the transition network of the imaginary example in Table1
+</figcaption>
+</figure>
+</div>
+<p>In the example, we can see patterns as they emerge when students consistently repeat a behavior, these patterns typify their approach to studying or managing learning tasks. For instance, a repeated pattern of moving from <em>Read Materials</em> to <em>Quiz</em> reveals a strategy of preparing with taking quizzes before attempting assignments. We also see another pattern of transitioning from <em>Submit assignment</em> to <em>Feedback</em> which reflects meta-cognitive self-evaluation. It is also evident that <em>Feedback</em> receives most transitions (has high in-strength centrality) which makes it the central event in the learning process (sum of estimated transition probabilities = <span class="math inline">\(1 + 0.3 + 0.3\)</span>) and that <em>Submit assignment</em> bridges connections to other events (has high betweenness centrality).</p>
+<section id="network-representation" class="level3">
+<h3 class="anchored" data-anchor-id="network-representation">Network Representation</h3>
+<p>In TNA, the learning process is represented as a directed weighted network. This network can be described in the following way:</p>
+<ul>
+<li><strong>Nodes</strong> (<span class="math inline">\(V\)</span>): These represent the different learning events, such as watching a video, taking a quiz, or submitting an assignment. It can also be states, dialogue moves, roles in collaborative activity, motivation states or any event that can be represented as a sequence unit (occurrences).</li>
+<li><strong>Edges</strong> (<span class="math inline">\(E\)</span>): These represent the transitions between activities, showing the direction of transitioning from one activity to the next.</li>
+<li><strong>Weights</strong> (<span class="math inline">\(W\)</span>): Weights represent the probability of transitioning from an event or state to another (contingencies).</li>
+</ul>
+<p>The building blocks of TNA are weighted edges that under-grid the structure and dynamics of the transition processes. The edges weight indicates the likelihood (possibility) of transition and the arrows reflects the direction of the transition. Let’s take some examples from our example network.</p>
+<ul>
+<li>From <em>Watch Video</em> to <em>Quiz</em> (<span class="math inline">\(v_1 \to v_2\)</span>, (<span class="math inline">\(W\)</span> = 0.6): means that there is a directed edge from <em>Watch Video</em> (<span class="math inline">\(v_1\)</span>) to <em>Quiz</em> (<span class="math inline">\(v_2\)</span>), with a weight of 0.6. This means there is a 60% probability that students proceed to take the quiz after watching the video, making it a common next step.</li>
+<li>From <em>Quiz</em> to <em>Submit Assignment</em> (<span class="math inline">\(v_2 \to v_4\)</span>, (<span class="math inline">\(W\)</span> = 1): means that there is a directed edge from <em>Quiz</em> (<span class="math inline">\(v_2\)</span>) to <em>Submit Assignment</em> (<span class="math inline">\(v_4\)</span>) with a weight of 1. This indicates that all students (<span class="math inline">\(100\%\)</span>) are likely to move from completing a quiz directly to submitting an assignment. It may be because this is a mandatory step, meaning every student follows this path.</li>
+<li>From <em>Read Materials</em> to <em>Quiz</em> (<span class="math inline">\(v_3 \to v_2\)</span>, (<span class="math inline">\(W\)</span> = 0.5): means there is an edge from <em>Read Materials</em> (<span class="math inline">\(v_3\)</span>) to <em>Quiz</em> (<span class="math inline">\(v_2\)</span>) with a weight of 0.5. This signifies that there is 50% probability that students choose to take a quiz after reading materials, indicating that it is relatively common.</li>
+</ul>
+<p>The TNA network <span class="math inline">\(G = (V, E, W)\)</span> is thus composed of the nodes (<span class="math inline">\(V\)</span>), the edges (<span class="math inline">\(E\)</span>), and weights (<span class="math inline">\(W\)</span>). The resulting directed weighted network <span class="math inline">\(G\)</span> provides a complete view of the learning process, and shows how students navigate through different activities, which transitions are most probable, and which activities are important within the overall learning process.</p>
+</section>
+<section id="mathematical-grounding-of-tna" class="level3">
+<h3 class="anchored" data-anchor-id="mathematical-grounding-of-tna">Mathematical grounding of TNA</h3>
+<p>Given the stochastic nature of the learning process —as we assume it is the generating mechanism of the data—, TNA uses stochastic modeling (i.e., Markov models) <span class="citation" data-cites="helske2024 Koller2009-kv Reimann2019-ry">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>; <a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>; <a href="#ref-Reimann2019-ry" role="doc-biblioref">Reimann 2019</a>)</span>. Markov models mine the transition probabilities from sequences of activities by capturing the likelihood of moving from one state to the next as a probability <span class="citation" data-cites="helske2024 Koller2009-kv Newman2018-vp">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>; <a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>; <a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>)</span>. For a given sequence of events, the transition probability <span class="math inline">\(P(v_j \mid v_i)\)</span> is estimated from data as:</p>
+<p><span class="math display">\[
+\widehat{P(v_j \mid v_i)} = \frac{n(v_i \to v_j)}{\sum_{k=1}^S n(v_i \to v_k)}
+\]</span></p>
+<p>where <span class="math inline">\(n(v_i \to v_j)\)</span> is the count of observed transitions from state <span class="math inline">\(v_i\)</span> to <span class="math inline">\(v_j\)</span>, and the denominator represents the total outgoing transitions from state <span class="math inline">\(v_i\)</span> with <span class="math inline">\(S\)</span> denoting the total number of states. If there are no transitions from <span class="math inline">\(v_i\)</span>, then the probability cannot be estimated. These estimated probabilities are assembled into a <strong>transition matrix</strong> <span class="math inline">\(T\)</span>, where each element <span class="math inline">\(T_{ij}\)</span> represents the estimated probability of transitioning from <span class="math inline">\(v_i\)</span> to <span class="math inline">\(v_j\)</span>. For example, the matrix of our example looks like this.</p>
+<p><span class="math display">\[
+T = \begin{pmatrix}
+0 &amp; 0.6 &amp; 0.4 &amp; 0 \\
+0 &amp; 0 &amp; 0.2 &amp; 0.8 \\
+0.3 &amp; 0.5 &amp; 0 &amp; 0.2 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{pmatrix}
+\]</span></p>
+<p>Matrices and networks together offer a seamless representation of probabilistic models, where transition matrices underpin the mathematical structure and graph theory methods provide the tools and foundations for the analysis.</p>
+</section>
+<section id="tna-features" class="level3">
+<h3 class="anchored" data-anchor-id="tna-features">TNA features</h3>
+<section id="visualization" class="level4">
+<h4 class="anchored" data-anchor-id="visualization">Visualization</h4>
+<p>Visualization of the TNA models allows researchers to get a bird’s-eye view of the learning process, capture the essence of the full structure, the connectivity of the events, identify important patterns, central learning events as well as how they are temporally related. Comparative plots (either by subtraction or permutation) allows researchers to understand the differences between groups of students—such as high-achieving versus low-achieving students or those in different contexts that may influence strategies or influence behavior <span class="citation" data-cites="helske2024 Koller2009-kv Newman2018-vp Borgatti2009-ec">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>; <a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>; <a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>; <a href="#ref-Borgatti2009-ec" role="doc-biblioref">Borgatti et al. 2009</a>)</span></p>
+<p>TNA offers powerful visualization features that rely on the <code>qgraph</code> package with several enhancements <span class="citation" data-cites="Epskamp2012-ij">(<a href="#ref-Epskamp2012-ij" role="doc-biblioref">Epskamp et al. 2012</a>)</span>. First, TNA graphs capture the full transition process in an intuitive network visualization with optimized layouts. Also, the ability to fix the layout across several plots allowing the comparison across several transition processes. Further, the visualization in TNA can accept other layouts from, e.g., the <code>igraph</code> package as well as any other custom designed layout (see <code>qgraph</code> manual for this) <span class="citation" data-cites="Csardi2006-uq">(<a href="#ref-Csardi2006-uq" role="doc-biblioref">Csardi and Nepusz 2006</a>)</span>. Furthermore, the versatility of <code>qgraph</code> allows researchers to add more information to the plot e.g., confidence intervals, thresholds and themes etc. The flexible and customization visualization options —as we will see later— offers researchers several possibilities of visualizing patterns (e.g., dyads and triads), communities and any custom configurations.</p>
+</section>
+<section id="network-measures" class="level4">
+<h4 class="anchored" data-anchor-id="network-measures">Network measures</h4>
+<p>Network measures provide important insights into the overall structure of the process (graph-level measures), the importance or the roles of the events (centrality measures) in the process as well as the centrality of transitions (edge centrality) <span class="citation" data-cites="Newman2018-vp saqr2022 Saqr2024">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>; <a href="#ref-saqr2022" role="doc-biblioref">Saqr and Peeters 2022</a>; <a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>)</span>. TNA estimates many of these measures that are appropriately situated for the nature of the transition networks (probabilistic directed and weighted networks).</p>
+<section id="network-level-measures" class="level5">
+<h5 class="anchored" data-anchor-id="network-level-measures">Network-level measures</h5>
+<p>TNA offers several basic network measurements that start with the simple measures like node count which indicates the number of unique events or activities in the network and edge count which represent the number of unique directed transitions between these nodes. However, given that TNA networks may be fully connected or saturated (each node is connected to all other nodes), some measures may not be meaningful in such scenarios. For instance, network <em>density</em> reflects how completely connected the network is, or the proportion of actual connections to all possible ones. In cases of fully connected networks, density is 1 and therefore, does not offer much information. However there are several other situations (non-connected networks, pruned networks, or bootstrapped models which will be discussed later) that network density will be useful in showing the network structure <span class="citation" data-cites="Newman2018-vp Saqr2024">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>; <a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>)</span>. Similarly, measures like the mean out-strength and in-strength which refer to the sum of transition probabilities of outgoing or incoming interactions to each node, respectively may need to be understood according to the network connectivity (fully saturated or not) <span class="citation" data-cites="Newman2018-vp">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>)</span>.</p>
+<p><em>Centralization</em> (both out-degree and in-degree) reflects how centralized the network is around particular nodes showing a dominant state, or event. These measures will show which events are at the center of the process, or whether an event or a state dominates the process <span class="citation" data-cites="saqr2024a">(<a href="#ref-saqr2024a" role="doc-biblioref">Saqr, López-Pernas, Conde-González, et al. 2024</a>)</span>. <em>Reciprocity</em> reflects the likelihood that two nodes have mutual connections, reflecting the mutuality of interactions. It may be important in some processes to examine their reciprocal interactions such as collaborative processes where we expect some stronger transitions between, e.g., argumentation and knowledge building <span class="citation" data-cites="Newman2018-vp saqr2020">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>; <a href="#ref-saqr2020" role="doc-biblioref">Saqr et al. 2020</a>)</span>.</p>
+<p>These measures together provide a concise overview of network connectivity, distribution, and flow of dynamics in the transition process. Notable to say that no existing process mining model includes or allows or operationalizes network measures to understand the learning process and therefore, all of such measures are among the strengths of TNA.</p>
+</section>
+</section>
+<section id="node-level-measures" class="level4">
+<h4 class="anchored" data-anchor-id="node-level-measures">Node-level measures</h4>
+<p>Centrality measures provide a quantification of the role or importance of a state or an event in the process <span class="citation" data-cites="saqr2024a">(<a href="#ref-saqr2024a" role="doc-biblioref">Saqr, López-Pernas, Conde-González, et al. 2024</a>)</span>. With centrality measures, researchers can rank events according to their value in, for instance, bridging the interactions (betweenness centrality) or receiving most transitions (in-strength centrality) <span class="citation" data-cites="saqr2022a">(<a href="#ref-saqr2022a" role="doc-biblioref">Saqr et al. 2022</a>)</span>. In doing so, centrality measures can reveal which behaviors or cognitive states are central to the learning process, either as destinations of frequent transitions, as starting points for various actions, or as bridges between different learning activities or as a key to a spreading phenomenon. Using centrality measures, researchers can identify important events that can be targets for intervention or improvement <span class="citation" data-cites="Newman2018-vp Saqr2024">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>; <a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>)</span>.</p>
+<p>The choice of what centrality measure to apply depends heavily on the specific research <span class="citation" data-cites="saqr2024a">(<a href="#ref-saqr2024a" role="doc-biblioref">Saqr, López-Pernas, Conde-González, et al. 2024</a>)</span>. From a probabilistic perspective, certain centrality measures reflect the inherent properties of how transitions are structured, specifically, out-strength centrality is consistently equal to 1 across all nodes, it means that the transition probabilities from each event always sum 1 <span class="citation" data-cites="helske2024">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>)</span>. Therefore, it is meaningless in some situations. However, in TNA networks where we delete insignificant edges and self-transitions, out-strength becomes useful and in that case reflects stability, lack of change (being stuck in a state) or repetitive actions <span class="citation" data-cites="Koller2009-kv">(<a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>)</span>.</p>
+<p>It is also important to mention that in TNA, the raw or absolute values of centrality measures are not inherently meaningful on their own. It is the relative values of these measures that matter, allowing researchers to rank nodes and identify their relative importance or influence within the network <span class="citation" data-cites="Newman2018-vp">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>)</span>. This comparison helps determine which events are central, which nodes serve as key bridges, and which activities are most likely to receive transitions in the learning process. Last, it is important to note that not all centrality measures are directly transferable to TNA and researchers have to think how and why a measure makes sense in their own context <span class="citation" data-cites="LABOOK2_Chapter_17 LABOOK2_Chapter_16">(<a href="#ref-LABOOK2_Chapter_17" role="doc-biblioref">López-Pernas et al. 2025</a>; <a href="#ref-LABOOK2_Chapter_16" role="doc-biblioref">Saqr et al. 2025</a>)</span>.</p>
+</section>
+<section id="edge-level-measures" class="level4">
+<h4 class="anchored" data-anchor-id="edge-level-measures">Edge-level measures</h4>
+<p>In TNA, edge centrality measures quantify the importance of <em>transitions</em> between events, rather than the importance of the events themselves, they provide insights into how critical a particular transition is in to the flow of transitions or interactions in the process <span class="citation" data-cites="Csardi2006-uq">(<a href="#ref-Csardi2006-uq" role="doc-biblioref">Csardi and Nepusz 2006</a>)</span>. In particular, betweenness centrality of an edge, for example, reflects how often a transition bridges other transitions. In doing so, edge centrality measures help researchers understand not just which nodes are important, but which transitions are important in guiding the learning process and maintaining the integrity of the sequence of activities.</p>
+</section>
+<section id="patterns" class="level4">
+<h4 class="anchored" data-anchor-id="patterns">Patterns</h4>
+<p>Patterns represent the fundamental building blocks of the structure and dynamics of the learning process. As we discussed before, patterns provide insights into, e.g., the behavior and strategies that learners use while studying or interacting with learning materials <span class="citation" data-cites="winne2010 saqr2022 Saqr2024">(<a href="#ref-winne2010" role="doc-biblioref">Winne 2010</a>; <a href="#ref-saqr2022" role="doc-biblioref">Saqr and Peeters 2022</a>; <a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>)</span>. Furthermore, capturing repeated consistent patterns allows us to build theories and generalizable inferences <span class="citation" data-cites="Winne2000-mo">(<a href="#ref-Winne2000-mo" role="doc-biblioref">Winne and Perry 2000</a>)</span>. For instance, if we repeatedly found a strong pattern of transition between planning and task enactment in project work and this pattern is associated with project success, we can therefore recommend such approach <span class="citation" data-cites="malmberg2022">(<a href="#ref-malmberg2022" role="doc-biblioref">Malmberg et al. 2022</a>)</span>. We can also design to strengthen such pattern and monitor students when doing it or support them. On the functionality side, TNA allows the identification of several patterns: cliques (dyads and triads and other cliques) and communities. A network clique is a subset of nodes in a graph where every pair of nodes is directly connected to each other by an edge. In network terms, cliques represent tightly-knit communities or groups, closely related entities or systems or interdependent nodes that shape how learning unfolds over time <span class="citation" data-cites="Saqr2024">Saqr, López-Pernas, Törmänen, et al. (<a href="#ref-Saqr2024" role="doc-biblioref">2024a</a>)</span> .</p>
+</section>
+<section id="cliques-dyads" class="level4">
+<h4 class="anchored" data-anchor-id="cliques-dyads">Cliques: Dyads</h4>
+<p>A dyad is the simplest pattern in TNA representing a transition between two nodes. A dyad becomes interesting when it is a mutual dyad (bidirectional) and when the edge weights are high, e.g., more than 0.15 in either direction. Strong mutual dyads (henceforth dyads for brevity) indicate the strong interdependence between states or events that they are recurrently occurring. Analyzing dyads helps to identify important sequences, recurrent or consistent transitional patterns of learning behavior or strategies. For instance, consistently moving from <em>reading materials</em> to <em>taking a quiz</em> indicating a strong self-evaluative strategy. A student commonly transitioning between disengagement and engagement indicates instability and problematic approach. On the overall picture (<a href="#fig-dyads-triads" class="quarto-xref">Figure&nbsp;3</a> -left), dyads are the backbone of the whole process and the constellation of dyads help characterize and describe the full process.</p>
+<div id="fig-dyads-triads" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dyads-triads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="dyad_triad_comparison.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dyads-triads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Figure</strong>&nbsp;3<strong>.</strong> Dyads (left) and triads (right)
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="cliques-triads" class="level4">
+<h4 class="anchored" data-anchor-id="cliques-triads">Cliques: Triads</h4>
+<p>Triads represent connections between three nodes capturing more complex relationships that go beyond direct transitions. In graph theory, the constellation of three nodes carries a very central position and hence multiple names and configurations (triples, triads, triangles). In TNA, cliques of three nodes where each node is connected to the others in either direction indicates a strong interdependent subgroup of nodes that form a strong core of the process. Triads represent higher-order dependencies in learning behavior where one activity not only follows another but influence or depends on subsequent events. For instance, the triad in the example above (<a href="#fig-dyads-triads" class="quarto-xref">Figure&nbsp;3</a> - right) shows strong temporal interdependence between studying, revising and planning reflecting a well-managed approach to learning. The analysis of triads is particularly important in TNA, as it can highlight the presence of reciprocal or reinforcing relationships, where learning activities form a cohesive structure that encourages repeated engagement <span class="citation" data-cites="Saqr2024">(<a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>)</span> .</p>
+</section>
+<section id="communities" class="level4">
+<h4 class="anchored" data-anchor-id="communities">Communities</h4>
+<p>Communities are groups of nodes that are more closely related or densely interconnected together more than to other nodes in the network. Specifically, in TNA, communities are groups of states or events that frequently transition between one-another or share similar dynamics <span class="citation" data-cites="hernández-garcía2024">(<a href="#ref-hernández-garcía2024" role="doc-biblioref">Hernández-García et al. 2024</a>)</span>. Also, communities are cohesive sequences or succession of activities that are more likely to co-occur together, has a typical pathways or recurring behaviors. Unlike cliques, which have a fixed or predefined structure (2-clique or 3-clique), communities are data-driven based on the connectivity patterns in the data which makes them more descriptive of real-world structure <span class="citation" data-cites="Newman2018-vp">(<a href="#ref-Newman2018-vp" role="doc-biblioref">Newman 2018</a>)</span>. In doing so, communities reveal existing structures, unravel typical configurations or constellations or actually mine them from the learning process. Communities are not strictly fully connected but show higher-than-average connectivity where the grouping indicates a higher level of association and interaction compared to the broader network <span class="citation" data-cites="hernández-garcía2024">(<a href="#ref-hernández-garcía2024" role="doc-biblioref">Hernández-García et al. 2024</a>)</span>.</p>
+<p>In the context of TNA, communities can be groups of dialogue moves, utterances, or states, or learning events that are more densely connected with each other or follow each other. Identifying communities help uncover these — latent or hidden— clusters of related interactions or behaviors during the learning process showing e.g., how learners collaborate or self-regulate or approach their learning. For instance, in a collaborative learning scenario, communities might form around self-evaluative utterances, feedback exchanges, or task-enactment dialogue moves. Identifying these clusters provides insight into common regulatory practices or patterns of interaction that contribute to effective collaboration and learning <span class="citation" data-cites="LABOOK2_Chapter_17">(<a href="#ref-LABOOK2_Chapter_17" role="doc-biblioref">López-Pernas et al. 2025</a>)</span>.</p>
+<p>Furthermore, identifying communities of behavior or events in TNA can contribute or advance our theory building and consequently understanding of learning. Think of identifying communities of behavior as uncovering latent variables. These communities represent underlying patterns of interaction inferred from densely connected behaviors into a simplified, meaningful structure suggesting the presence of an underlying construct or a behavioral mechanism that generated such a pattern. This data-driven approach helps provide evidence of existing constructs, concepts or validating existing ones. As such, identifying communities can help refine theoretical models or develop new ones or help discover and describe the dynamics of behavior. Using communities of inter-related events or factors to infer constructs or theoretical models has been an established tradition in several fields, e.g., factor analysis, network modeling or semantic networks <span class="citation" data-cites="epskamp2017 saqr2024a Saqr2024 LABOOK2_Chapter_17">(<a href="#ref-epskamp2017" role="doc-biblioref">Epskamp, Rhemtulla, et al. 2017</a>; <a href="#ref-saqr2024a" role="doc-biblioref">Saqr, López-Pernas, Conde-González, et al. 2024</a>; <a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>; <a href="#ref-LABOOK2_Chapter_17" role="doc-biblioref">López-Pernas et al. 2025</a>)</span>.</p>
+</section>
+<section id="clusters" class="level4">
+<h4 class="anchored" data-anchor-id="clusters">Clusters</h4>
+<p>Clusters represent typical transition networks that recur together across time <span class="citation" data-cites="saqr2024b LABOOK2_Chapter_17">(<a href="#ref-saqr2024b" role="doc-biblioref">Saqr, López-Pernas, Helske, et al. 2024</a>; <a href="#ref-LABOOK2_Chapter_17" role="doc-biblioref">López-Pernas et al. 2025</a>)</span>. Unlike communities, clusters involve the entire network where groups of states or events are similarly interconnected and each exhibit a distinct transition pattern (latent or hidden) with its own set of transition probabilities <span class="citation" data-cites="helske2024">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>)</span>. This means that clusters capture the dynamics in learning behaviors, revealing typical relations that learners frequently adopt as units across different instances. Identifying clusters of behavior is a very common approach in learning analytics under several names or labels, e.g., tactics, clusters, or strategies. Here, clusters are similar to those in the sequence mining literature where temporal patterns are inferred from the data to reveal typical behavioral approaches <span class="citation" data-cites="saint2020 saqr2023 fan2021">(<a href="#ref-saint2020" role="doc-biblioref">Saint et al. 2020</a>; <a href="#ref-saqr2023" role="doc-biblioref">Saqr et al. 2023</a>; <a href="#ref-fan2021" role="doc-biblioref">Fan et al. 2021</a>)</span>. Clusters will be discussed in a devoted chapter <span class="citation" data-cites="LABOOK2_Chapter_17">(<a href="#ref-LABOOK2_Chapter_17" role="doc-biblioref">López-Pernas et al. 2025</a>)</span>.</p>
+</section>
+<section id="sub-networks-or-network-comparison" class="level4">
+<h4 class="anchored" data-anchor-id="sub-networks-or-network-comparison">Sub-networks or network comparison</h4>
+<p>Oftentimes, we encounter two predefined conditions, such as high versus low achievers, or different course types (e.g., practical versus theoretical, or easy task versus demanding task). In that case, we have two different processes that are defined by their context (not clustered or inferred). Comparing such groups has been commonly performed visually, e.g., comparing two process models, sequence models, or epistemic networks <span class="citation" data-cites="elmoazen2022 saint2020">(<a href="#ref-elmoazen2022" role="doc-biblioref">Elmoazen et al. 2022</a>; <a href="#ref-saint2020" role="doc-biblioref">Saint et al. 2020</a>)</span>. While visual comparison may show and inform about differences, it does not tell us about how statistically significant these differences are. Where exactly the differences are statistically significant and where they are not. TNA offers a rigorous systematic method for process comparison based on permutation. In doing so, we can compare models visually, plot the differences and estimate the significance of each and every edge. Having such a rigorous comparison opens the door for researchers to draw meaningful inferences, identify theoretically significant differences, and refine our understanding of learning processes in various contexts. This statistical rigor enhances the validity of our findings and contributes to the development of more nuanced theories and conceptual frameworks <span class="citation" data-cites="vanborkulo2023">(<a href="#ref-vanborkulo2023" role="doc-biblioref">Borkulo et al. 2023</a>)</span>.</p>
+</section>
+<section id="bootstrapping-and-model-validation" class="level4">
+<h4 class="anchored" data-anchor-id="bootstrapping-and-model-validation">Bootstrapping and model validation</h4>
+<p>Most research on networks or process mining uses descriptive methods. The validation or the statistical significance of such models are almost absent in the literature. Having validated models allows us to assess the robustness and reproducibility of our models to ensure that the insights we get are not merely a product of chance and are therefore generalizable.</p>
+<p>TNA offers an important methodological advancement by incorporating bootstrap methods to identify significant edges within the TNA networks <span class="citation" data-cites="saqr2022">(<a href="#ref-saqr2022" role="doc-biblioref">Saqr and Peeters 2022</a>)</span>. Bootstrapping is a re-sampling technique that entails repeatedly —usually hundreds, if not thousands, of times— drawing samples from the original dataset with replacement to estimate the model for each of these samples <span class="citation" data-cites="epskamp2017a network2021">(<a href="#ref-epskamp2017a" role="doc-biblioref">Epskamp, Borsboom, et al. 2017</a>; <a href="#ref-network2021" role="doc-biblioref"><span>“Network Analysis of Multivariate Data in Psychological Science”</span> 2021</a>)</span>. Bootstrapping does not require strong assumptions regarding the distribution of the data which makes it suitable for analyzing process data which often do not adhere to specific distributions <span class="citation" data-cites="aa1994">(<a href="#ref-aa1994" role="doc-biblioref">AA et al. 1994</a>)</span>. Given that bootstrapping entails replacement, each bootstrap sample may include multiple copies of some observations while excluding others to assess variability in the estimated parameters. When edges consistently appear across the majority of the estimated models, they are considered stable and significant <span class="citation" data-cites="aa1994">(<a href="#ref-aa1994" role="doc-biblioref">AA et al. 1994</a>)</span>. In doing so, bootstrapping helps effectively filter out small, negligible or spurious edges resulting in a stable model and valid model <span class="citation" data-cites="epskamp2017a network2021">(<a href="#ref-epskamp2017a" role="doc-biblioref">Epskamp, Borsboom, et al. 2017</a>; <a href="#ref-network2021" role="doc-biblioref"><span>“Network Analysis of Multivariate Data in Psychological Science”</span> 2021</a>)</span>.</p>
+<p>Another advantage of bootstrapping is that it can effectively prune dense networks. This because one of the challenges of most probabilistic networks like TNA is that they are commonly fully connected and lack sparsity (i.e., meaning that every possible connection between nodes (events or states) is present to some degree <span class="citation" data-cites="Koller2009-kv epskamp2017a">(<a href="#ref-Koller2009-kv" role="doc-biblioref">Koller and Friedman 2009</a>; <a href="#ref-epskamp2017a" role="doc-biblioref">Epskamp, Borsboom, et al. 2017</a>)</span>. This is a common issue in most probabilistic networks <span class="citation" data-cites="epskamp2017a">(<a href="#ref-epskamp2017a" role="doc-biblioref">Epskamp, Borsboom, et al. 2017</a>)</span>. Bootstrapping can help mitigate this issue through identifying and eliminating small and uncertain edges to effectively retrieve the backbone of the network. The resulting simplified network is easier to interpret and more likely to be generalizable. The integration of bootstrap methods into TNA represents a significant advancement in the validation of process models that has the potential to improve the quality of the models but also contributes to more effective data-driven theory building in education.</p>
+<p>The bootstrap function in TNA allows for the calculation of confidence intervals and p-values for each edge weight. This level of statistical rigor provides a quantifiable measure of uncertainty and robustness for each transition in the network. Bootstrapping also help exclude transitions that may not represent true relationships within the data to include only the most meaningful interactions. The resulting process models may offer an empirical assessment for existing constructs and concepts, as well as in validating or refining hypothesis. A systematically rigorous model also allows researchers to uncover patterns and relationships that either support current theoretical frameworks or advance others .</p>
+</section>
+</section>
+</section>
+<section id="tutorial-of-tna-with-r" class="level2">
+<h2 class="anchored" data-anchor-id="tutorial-of-tna-with-r">Tutorial of TNA with R</h2>
+<p>TNA can analyse any data that can be represented as a sequence which has transitions or changes across time. In other words, TNA accepts any categorically ordered event data, e.g., sequence of learning events, states, phases, roles, dialogue moves or interactions to mention a few. This data can come from time-stamped learning management system data, coded interactions data, event-log data or order event data. The data can be in <code>stslist</code> format (sequence object), which is typically created using the <code>seqdef()</code> function from the <code>TraMineR</code> package. In addition, <code>tna</code> accepts wide data format data where each row represents sequence of data and each column is a time point.</p>
+<p>The analysis in this chapter uses the <code>tna</code> R package and other packages that are necessary for data manipulation and plotting <span class="citation" data-cites="tna_package">(<a href="#ref-tna_package" role="doc-biblioref">Tikka et al. 2025</a>)</span>. It is assumed that the reader is familiar with the R programming language. If that is not the case, it is recommended to refer to previous tutorials on the basics of R <span class="citation" data-cites="Tikka2024-ph">(<a href="#ref-Tikka2024-ph" role="doc-biblioref">Tikka et al. 2024a</a>)</span>, data cleaning <span class="citation" data-cites="Kopra2024-fx">(<a href="#ref-Kopra2024-fx" role="doc-biblioref">Kopra et al. 2024</a>)</span>, basic statistics <span class="citation" data-cites="Tikka2024-wl">(<a href="#ref-Tikka2024-wl" role="doc-biblioref">Tikka et al. 2024b</a>)</span>, and visualization <span class="citation" data-cites="Lopez-Pernas2024-ge">(<a href="#ref-Lopez-Pernas2024-ge" role="doc-biblioref">López-Pernas et al. 2024</a>)</span>. It is also recommended to have previous knowledge about Markov models <span class="citation" data-cites="helske2024">(<a href="#ref-helske2024" role="doc-biblioref">Helske et al. 2024</a>)</span>. We have also released a Shiny web application that does not require coding skills, which includes the main features ot <code>tna</code>: <a href="https://sonsoleslp.shinyapps.io/tna-app/">https://sonsoleslp.shinyapps.io/tna-app/</a>.</p>
+<p>In the first step of the analysis, we begin by loading the necessary packages. We will use <code>tidyverse</code> for data manipulation, wrangling, and ensuring the data is clean and organized for analysis <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span>. Most importantly, we load the <code>tna</code> package which provides a wide array of functions for estimating, visualizing and manipulating <code>tna</code> models <span class="citation" data-cites="tna_package">(<a href="#ref-tna_package" role="doc-biblioref">Tikka et al. 2025</a>)</span>. Besides loading the required libraries, the next code chunk also loads the data that we are going to use throughout the tutorial, which is a built-in dataset in the <code>tna</code> package (<code>group_regulation</code>) and represents interactions between groups of learners trying to regulate their learning based on the data in this study <span class="citation" data-cites="Saqr2024">(<a href="#ref-Saqr2024" role="doc-biblioref">Saqr, López-Pernas, Törmänen, et al. 2024a</a>)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install `tna` if you haven't already</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tna")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"tna"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"tidyverse"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"group_regulation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="building-tna-model" class="level3">
+<h3 class="anchored" data-anchor-id="building-tna-model">Building <code>tna</code> Model</h3>
+<p>TNA analysis starts by building the main TNA object which is called <code>model</code>. A model contains all the information necessary for further analysis e.g., plotting, estimation of centralities, or comparison. To estimate a TNA model we use the function <code>tna()</code> with one argument which is a <code>stslist</code> object (sequence object) usually created by the <code>seqdef()</code> function of <code>TraMineR</code>. However, the <code>tna</code> package can also process event data with the <code>prepare_data()</code> function to first convert such data into a proper format (learn more about this <a href="https://sonsoles.me/tna/articles/prepare_data.html">here</a>). Furthermore, <code>tna()</code> also accepts standard data frames in wide format (to learn how to create a sequence object you may need to refer to this chapter <span class="citation" data-cites="saqr2024b">(<a href="#ref-saqr2024b" role="doc-biblioref">Saqr, López-Pernas, Helske, et al. 2024</a>)</span>). The function estimates a Markov model from the data where the initial and transition probabilities are estimated directly from the observed initial state probabilities and transition frequencies. The TNA model is structured as a list containing the elements that facilitate the analysis of transition networks, these elements are described below:</p>
+<ul>
+<li><p><strong>Initial Probabilities (<code>inits</code>)</strong>: These define the likelihood of starting in a particular state at the beginning of the process (at the first time point before any transitions happen). In an educational context, an initial probability represents the probability that a student begins in a specific state (such as “engaged” or “motivated”) before any activities or interventions occur. These probabilities provide a snapshot of where students start within the process and help frame the subsequent transitions.</p></li>
+<li><p><strong>Transition Probabilities (<code>weights</code>)</strong>: These describe the likelihood of moving from one state to another at each step in the process. Transition probabilities capture how students transitions, moves or follows between different learning states (engaged, motivated or achiever) or events (e.g., assessment, reading or submission).</p></li>
+<li><p><strong>Labels (<code>labels</code>)</strong>: The descriptive names for each node in the network and is included to enhance the interpretability of the analysis. The labels are automatically retrieved from the alphabet of the sequence object or the categories in the data frame.</p></li>
+<li><p><strong>Data (<code>data</code>)</strong>: This is a version of the sequence data (or data frame) that contains all the necessary sequence data, converted into an internal format used by the <code>tna</code> package for further analysis (permutation, bootstrapping, etc.).</p></li>
+</ul>
+<p>Together these elements for the basis for analysis and visualization. In the example above we see the TNA network plot with transition probabilities as directed edge weights and the initial probability as the pie (the thin ring around the nodes). In particular, we see video has an initial probability of 1 and all other events have an initial probability of 0. You can use <code>print(model)</code> to get a feel of what it has and how is it structured.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Building a tna model by using the tna function with the data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">tna</span>(group_regulation)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="plotting-and-interpreting-tna-models" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-and-interpreting-tna-models">Plotting and interpreting <code>tna</code> models</h3>
+<p>The next step is to plot the model, and in TNA it is as easy as creating the model. We can just call the function plot and pass the model argument to it <code>plot(model)</code>. The plot is a directed weighted network where nodes take the colors and the labels retrieved from the sequence object (if available). Each node (state or event or a learning activity) is represented as a circle. For instance, we see nodes for adapt, cohesion, coregulate in the network as well as six other nodes. Around each node, there is a thin rim (pie) that represents the initial probability (<code>inits</code>) of starting in this state.</p>
+<p>For instance, students are more likely to start in planning more than any other state (initial probability of 0.21) and showing as a pie proportional to 0.21 of the circle. We also see, that adapt has very small pie (initial probability of 0.01) which makes sense that adapt follows other actions.</p>
+<p>The arrows from each node to the other node represent the weighted transition probability and the direction of the transition. For instance, we see that there is a strong transition from adapt to cohesion with a probability of 0.27. We can also see loops, which represent the probability of staying in the same state, or repeating the same event again in the next time point.</p>
+<section id="interpretation-of-the-model" class="level4">
+<h4 class="anchored" data-anchor-id="interpretation-of-the-model">Interpretation of the model</h4>
+<p>The model plot reveals the dynamics of self-regulated learning and co-regulation among students. We start with the initial events, where students usually begin with planning (0.20), consensus (0.21), or discussing (0.18). Students are less likely to start with some states such as coregulate (0.019), synthesis (0.02), and adapt (0.012). These smaller initial probabilities suggest that these activities are less common starting points and shows students priorities in their regulation.</p>
+<p>Task-related processes such as planning and discussing are central in the network. The transition probabilities reveal that these processes are interconnected in various ways, reflecting the configuration of the self-regulated group interactions. Notably, transitions to consensus are particularly strong, with significant transitions from adapt (0.48) and cohesion (0.50). This indicates that adaptability and social cohesion are crucial for reaching consensus. The transition from consensus to coregulate (0.19) suggests that achieving agreement often leads to collaborative regulation.</p>
+<p>Emotional engagement plays a significant role students’ bonding and collaboration, as evidenced by the strong transition from emotion to cohesion (0.33). This highlights how emotions can facilitate social interactions and collaborative dynamics. The transition from cohesion to adapt (0.27) shows the role of social interaction in adaptability. Monitoring is another important regulatory process with notable transitions to plan (0.22) and discuss (0.38). This suggests that self-assessment prompts both further planning and discussion, essential for effective self-regulation. The transition from discussing to co-regulate (0.27) indicates that discussions often lead to collaborative regulation, further supported by the transition from co-regulate to monitor (0.09), demonstrating the cyclical nature of self-regulated learning.</p>
+<p>Overall, the network reveals a rich interplay between cognitive and emotional processes, emphasizing task enactment and socio-emotional regulation. Understanding these transitions can help educators develop strategies to support learners.</p>
+<p>The code below visualizes the network model (<a href="#fig-visualization" class="quarto-xref">Figure&nbsp;4</a>). Given that using <code>plot(model)</code> produces a very dense and hard to read model we will set two parameters:</p>
+<ul>
+<li><strong>Minimum Edge Weight</strong> (<code>minimum = 0.05</code>): Only edges with a weight of 0.05 or higher will be included in the plot.</li>
+<li><strong>Cut-Off Threshold</strong> (<code>cut = 0.1</code>): Edges with a weight below 0.1 are entirely shown with lighter color.</li>
+</ul>
+</section>
+<section id="pruning-and-retaining-edges-that-matter" class="level4">
+<h4 class="anchored" data-anchor-id="pruning-and-retaining-edges-that-matter">Pruning and retaining edges that “matter”</h4>
+<p>Transition networks are commonly fully connected —or saturated— where almost all nodes have connections to all other nodes with some probability. Therefore, mechanisms are needed to retrieve the core or backbone structure of the network. In other words, to make the network sparse. Network sparsity enhances interpretability by removing the overly complex structures, making it easier to identify the important components and relationships. It also isolates the signal from the noise by removing the small noisy edges that may obscure meaningful patterns allowing researchers to focus on the important interactions. We can use the minimum argument in TNA plots to remove small edges e.g., below 0.05 (visually) for easier reading and interpretability as we did before. Worth noting that these small probabilities are retained in the model for all further computations. Researchers may be interested in removing edges that are small and negligible in weight or pruning the model. Removing these small edges keep only the strong connections or transitions that are worthy and meaningful. In a network like ours, we have 81 edges and it is hard to take into account all of them.</p>
+<p>In TNA, small edges can be removed using the <code>prune()</code> function which removes edges using a user-specified method via the <code>method</code> argument. With the <code>"threshold"</code> method, edges are removed below a certain <code>threshold</code> value (the default is 0.05 which removes edges below 0.05). The <code>"lowest"</code> method deletes the lowest percentile of edges for instance, <code>lowest = 0.1</code> removes all edges in the lower 10th percentile in terms of edge weights. When using these methods, the <code>prune()</code> function makes sure that it does not disconnect the network, if it finds that the removal of one edge disconnects the network, it retains it to keep the network connected.</p>
+<p>Another theoretically sound method is to remove edges using a network null model. While several null models exists for non-weighted networks, only a few can be reliable in weighted networks like transition networks. TNA implements the <em>Disparity Filter</em> which is a robust network sparsification algorithm that helps extracts the backbone structure of weighted networks <span class="citation" data-cites="neal2022">(<a href="#ref-neal2022" role="doc-biblioref">Neal 2022</a>)</span>. The disparity filter simplifies the network by discarding weak edge that are lower than a pre-defined alpha level. The values of alpha ranges from 0.05 (roughly statistically significant compared to a random model), to 0.5 (more likely to than chance). Values of 0.05 are very restrictive and removes most edges in the network, therefore, for the case of pruning TNA models, it is advisable to use the default 0.5 levels which simply means that these edges are more likely to have resulted from a learning process rather than by chance. Values of 0.05 maybe used in larger networks or in cases of theory building and could possibly be interpreted that these structure are likely to be repeated or reproducible in future scenarios. Applying the disparity filter to the TNA model is simple and can be applied using the <code>"disparity"</code> method in <code>prune()</code> with the model as argument. The code in the next chunk does three all types of pruning in TNA (<a href="#fig-pruned" class="quarto-xref">Figure&nbsp;5</a>):</p>
+<ol type="1">
+<li><p><strong>Threshold</strong>: Directly removes edges with weights below 0.05, offering a straightforward cutoff approach.</p></li>
+<li><p><strong>Lowest Percentage</strong>: Removes the bottom 15% of edges when sorted by weight, focusing on relative edge importance.</p></li>
+<li><p><strong>Disparity Filter</strong>: Uses a different statistical approach (significance level <span class="math inline">\(\alpha\)</span> = 0.5) to identify significant edges based on the network’s topology.</p></li>
+</ol>
+<p>Pruning with <code>tna</code> can also be carried out by bootstrapping, which we will demonstrate later.</p>
+</section>
+</section>
+<section id="patterns-1" class="level3">
+<h3 class="anchored" data-anchor-id="patterns-1">Patterns</h3>
+<p>Patterns can be helpful to understand behavior, identify significant structures and help describe the process as detailed above. TNA supports identifying several types of patterns that can be expressed as n-clique. The <code>cliques()</code> function is designed to identify and visualize n-cliques from a TNA model. The function <code>cliques()</code> returns the number of cliques found, their respective matrices, while also allowing the user to visualize the cliques. Users can also pass custom visualization options e.g., edge, node sizes, color or layout. The arguments of <code>cliques</code> include the TNA model, <code>size</code> for specifying the size of cliques, so setting <code>size = 2</code> would find all dyads and setting <code>size = 3</code> would find all triads and so forth. The <code>threshold</code> argument sets the lowest weight for which an edge is considered part of the clique.</p>
+<p>The <code>sum_weights</code> argument can be set to determine whether the sum of edge weights should be considered when forming cliques for instance, <code>threshold = 0.1</code> and <code>sum_weights = FALSE</code> means that the edge has to have 0.1 weight in either direction. In contrast, <code>threshold = 0.1</code> and <code>sum_weights = TRUE</code> means, that the sum of the weights in either direction has to be 0.1 regardless of individual edge weights.</p>
+<p>The dyads below are a list of the strong interdependent dyads. The triads show the strong well-connected structures or patterns. We do not recommend looking at 4 or 5 cliques routinely but, of course, researchers could customize based on context.</p>
+<p>In this code, four different calls to the <code>cliques</code> function are made to identify and visualize cliques of varying sizes (with <code>size</code> values of 2, 3, 4, and 5) from a network model named <code>model</code>. Each function call focuses on a different size of cliques, using a specific weight threshold to determine which edges are considered strong enough to form part of a clique. The <code>show_loops</code> argument to <code>plot</code> controls whether self-loops (edges connecting a node to itself) should be displayed in the visual output, but loops are never included in the actual computation of cliques.</p>
+<p>The first function call identifies cliques of size 2, known as dyads (<a href="#fig-dyads" class="quarto-xref">Figure&nbsp;6</a>), using a weight threshold of 0.1. This means only pairs of nodes that are connected by edges with with transitions weights higher than 0.1 are considered. The second function identifies 3-cliques (<a href="#fig-triads" class="quarto-xref">Figure&nbsp;7</a>), or triads, using a weight threshold of 0.05 which captures the three fully connected nodes in the network. The third call focuses on 4-node cliques, or quadruples (<a href="#fig-fours" class="quarto-xref">Figure&nbsp;8</a>), with a lower weight threshold of 0.03. Finally, the fourth call identifies 5-cliques, or quintuples (<a href="#fig-fives" class="quarto-xref">Figure&nbsp;9</a>), with a weight threshold of 0.1. In this case, the <code>sum_weights = TRUE</code> option means that the sum of the edge weights in both directions between nodes is considered.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify 2-cliques (dyads) from the TNA model, excluding loops in the visualization</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A clique of size 2 is essentially a pair of connected nodes</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cliques_of_two <span class="ot">&lt;-</span> <span class="fu">cliques</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  model, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="dv">2</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.1</span>  <span class="co"># Only consider edges with weight &gt; 0.1</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cliques_of_two)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cliques_of_two)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="fig-dyads" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dyads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p>Identified dyads</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-dyads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Figure</strong>&nbsp;6
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify 3-cliques (triads) from the TNA_Model</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A clique of size 3 means a fully connected triplet of nodes</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>cliques_of_three <span class="ot">&lt;-</span> <span class="fu">cliques</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  model, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="dv">3</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.05</span> <span class="co"># Only consider edges with weight &gt; 0.05</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cliques_of_three)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cliques_of_three)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="fig-triads" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-triads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p>Identified triads</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-triads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Figure</strong>&nbsp;7
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify 4-cliques (quadruples) from the TNA_Model</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A clique of size 4 means four nodes that are all mutually connected</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>cliques_of_four <span class="ot">&lt;-</span> <span class="fu">cliques</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  model, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="dv">4</span>, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.03</span> <span class="co"># Only consider edges with weight &gt; 0.03</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cliques_of_four)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cliques_of_four)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout="[1,1,1]">
+
+</div>
+<div id="fig-fours" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fours-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p>Identified quadruples</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-fours-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Figure</strong>&nbsp;8
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify 5-cliques (quintuples) from the TNA_Model, summing edge weights</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Here, the sum of both directions of an edge must meet the threshold</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>cliques_of_five <span class="ot">&lt;-</span> <span class="fu">cliques</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  model, </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">size =</span> <span class="dv">5</span>, </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">threshold =</span> <span class="fl">0.015</span>, <span class="co"># Consider edge weights greater than 0.1</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sum_weights =</span> <span class="cn">TRUE</span> <span class="co"># Sum edge weights in both directions when evaluating thresholds</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cliques_of_five)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cliques_of_five)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout="[1,1,1]">
+
+</div>
+<div id="fig-fives" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<p>Identified quintuples</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-fives-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<strong>Figure</strong>&nbsp;9
+</figcaption>
+</figure>
+</div>
+<section id="centralities" class="level4">
+<h4 class="anchored" data-anchor-id="centralities">Centralities</h4>
+<section id="node-level-measures-1" class="level5">
+<h5 class="anchored" data-anchor-id="node-level-measures-1">Node-level measures</h5>
+<p>Centrality measures are important in identifying the important events, rank their value in certain processes. The <code>tna</code> package has a built-in function <code>centralities()</code> to compute centralities using the appropriate algorithm for a directed probabilistic process. The computation of centralities is simple with just passing the model object (<code>model</code>) to the function. By default, <code>centralities()</code> removes loops from the calculations which can be changed by the user by setting <code>loops=TRUE</code>. Removing the loops would entail that all computation of centralities will be performed without considering self-transitioning or staying in the same state. In that context, out-strength will mean stability of a state, the higher out-strength centrality, the more stable the state is as it less likely to transition to other states and vice versa. In our context, for example, students use adapt (out-strength = 1), means they always follow it by other processes. Whereas, plan has the lowest out-strength = 0.63, meaning that students may repeat planning steps several times before moving on. Please note, that out-strength centrality with <code>loops = TRUE</code> will always be 1 and therefore, will be meaningless to compute in non-pruned networks. In-strength centrality reflects the sum of received transitions and indicates the node is a common pathway that states end in.</p>
+<p>In our example, we see that <code>consensus</code> task received most transitions from other events (in-strength = 2.7). Betweenness centrality (based on randomized shortest paths, RSP) reflects the events that mediate or bridge other transitions. Please note, that in <code>tna</code> it is advisable to consider the Betweenness RSP as it is more appropriate for probabilistic networks. In our example, <code>adapt</code> lied between most other transitions The function also computes several other centrality measures but we won’t discuss them one by one here. Researchers can use <code>?centralities</code> to read the list of possible options. The default ones are shown in <strong>?@fig-cents</strong>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute centrality measures for the TNA model</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Centralities <span class="ot">&lt;-</span> <span class="fu">centralities</span>(model)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the centrality measures</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Centralities)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Furthermore, given that each TNA model can be converted to an <code>igraph</code> object, researchers can compute other centralities if they so wish. In the next code, we compute the hub and authority centralities.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate hub scores and the authority scores for the network</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>hits_scores <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">hits_scores</span>(<span class="fu">as.igraph</span>(model))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>hub_scores <span class="ot">&lt;-</span> hits_scores<span class="sc">$</span>hub</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>authority_scores <span class="ot">&lt;-</span> hits_scores<span class="sc">$</span>authority</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the calculated hub and authority scores for further analysis</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(hub_scores)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(authority_scores)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="edge-level-measures-1" class="level5">
+<h5 class="anchored" data-anchor-id="edge-level-measures-1">Edge-level measures</h5>
+<p>TNA can also compute edge level measures which would would rank edges according to their importance in the transition model or which transitions bridge other processes. We can do this by using the function <code>betweenness_network</code> which creates a network with betweenness centrality as edges (<strong>?@fig-edge-betweenness</strong>).</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Edge_betweeness <span class="ot">&lt;-</span> <span class="fu">betweenness_network</span>(model)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Edge_betweeness)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="community-finding" class="level4">
+<h4 class="anchored" data-anchor-id="community-finding">Community finding</h4>
+<p>Community detection identifies groups of nodes (states, events or actions) that exhibit strong interconnections within the transition process <span class="citation" data-cites="hernández-garcía2024">(<a href="#ref-hernández-garcía2024" role="doc-biblioref">Hernández-García et al. 2024</a>)</span>. Unlike the cliques, communities are identified algorithmically, and can be of any size. Therefore, it could offer a more realistic way of grouping similarly inter-connected transitions. TNA offers several community detection algorithms that are suited for transition networks (usually small, weighted and directed networks). Each of these algorithms offers a unique perspective to the grouping <span class="citation" data-cites="Csardi2006-uq">(<a href="#ref-Csardi2006-uq" role="doc-biblioref">Csardi and Nepusz 2006</a>)</span>.</p>
+<ul>
+<li><p>The <em>walktrap</em> algorithm detects tightly-knit groups of transitions based on random walks on the graph. It assumes that random walks will frequently stay within the same community before transitioning to another. finding smaller, cohesive communities within the network.</p></li>
+<li><p>The <em>Fast Greedy</em> algorithm detects communities by optimizing modularity where the algorithm begins with each node in its community and merges nodes based on increases in modularity until no further improvements are possible.</p></li>
+<li><p><em>Infomap</em> detects communities by optimizing a flow-based model that captures how information moves through the network.</p></li>
+<li><p>The <em>Edge Betweenness</em> algorithm focuses on the edges (transitions) in the network rather than the nodes by measuring how many shortest paths uses this transition. Edges with high betweenness are removed iteratively to reveal communities. This method is useful in TNA for uncovering transitions that act as bridges between different learning behaviors.</p></li>
+<li><p>The <em>Spin Glass</em> algorithm tries to find communities with strong internal connections and weak external connections.</p></li>
+</ul>
+<p>The code below identifies and then visualizes community structures within a <code>tna</code> network model. It begins by using the <code>communities()</code> function with the <code>model</code> argument to detect communities. The result is stored in the <code>communities</code> object. Next, the code visualizes these communities using the <code>plot()</code> function, specifying the <code>leading_eigen</code> method for community detection (<strong>?@fig-communities</strong>). Other algorithms can be specified in the same way, for example to use the spinglass algorithm we could pass the argument <code>method = "spinglass"</code>. Furthermore, the <code>communities</code> object contains the number of communities by each algorithm and the communities assignment.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>communities <span class="ot">&lt;-</span> <span class="fu">communities</span>(model)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(communities)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>communities <span class="ot">&lt;-</span> <span class="fu">communities</span>(model)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(communities, <span class="at">method =</span> <span class="st">"leading_eigen"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="network-inference" class="level3">
+<h3 class="anchored" data-anchor-id="network-inference">Network inference</h3>
+<section id="bootstrapping" class="level4">
+<h4 class="anchored" data-anchor-id="bootstrapping">Bootstrapping</h4>
+<p>Bootstrapping is a robust technique for validating edge weight accuracy and stability and consequently the model as a whole. Through bootstrapping, researchers can verify each edge, determine their statistical significance, and obtain a confidence interval for the transition probabilities. Bootstrapping is performed by repeatedly re-sampling the original data and creating new datasets. The new datasets (bootstrap samples) are created by randomly selecting data points (individual sequences in the case of sequence data) with replacement, meaning that some data points may appear multiple times in a sample while others may not appear at all <span class="citation" data-cites="aa1994">(<a href="#ref-aa1994" role="doc-biblioref">AA et al. 1994</a>)</span>. For each bootstrap sample, the TNA network is recalculated, which involves recalculating the edge weight. This process is repeated many times (typically 1000), generating an empirical distribution of edge weight for each edge. As such, we compare the original edge weight to the distribution of edge weights across bootstrap samples and compute confidence intervals (CIs) for each edge. In this context, a 95% confidence interval means that the true edge weight falls within 95% of such intervals in repeated studies.</p>
+<p>Bootstrapping also provides a p-value for edge significance by assessing how often a given edge appears with a weight significantly different from a chosen threshold value. Bootstrapping can therefore allow researchers to verify each edge (how likely a given edge would appear in future replications of the network structure) and also, the whole TNA network robustness i.e., if the network’s key features (e.g., important nodes or edges) remain consistent across re-sampled datasets, it suggests the network is robust and reliable. Therefore, we can test or verify hypothesis or advance an existing one. To carry out bootstrapping, we use the <code>bootstrap()</code> function with the <code>model</code> as an argument. The function has default value of 1000 bootstrap iterations (argument <code>iter</code>), and a higher number of iterations is of course better, but 1000 is often sufficient. We choose a threshold value of 0.05 to compare our bootstrapped transition probabilities via the argument <code>threshold</code>. This means that if we consistently observe that an edge is above this threshold in the bootstrapped samples, we deem it statistically significant.</p>
+<p>This code below performs bootstrapping using using the <code>bootstrap()</code> function, with a <code>seed = 265</code> for reproducibility. After the bootstrapping process, we can print a summary of the results showing relevant significance values for each edge in the network (CI and p-values). The result object also contains several other elements:</p>
+<ul>
+<li><code>weights_orig</code>: The original transition matrix of the TNA model</li>
+<li><code>weights_sig</code>: A matrix showing only statistically significant transitions (other weights are set to zero).</li>
+<li><code>weights_mean</code>: The mean transition matrix across all bootstrap samples.</li>
+<li><code>weights_sd</code>: The standard deviation matrix across all bootstrap samples.</li>
+<li><code>ci_lower</code>: The lower bound matrix of the bootstrap confidence intervals for transitions.</li>
+<li><code>ci_upper</code>: The upper bound matrix of the bootstrap confidence intervals for transitions.</li>
+<li><code>p_values</code>: A matrix of bootstrap p-values for each transition</li>
+<li><code>summary</code>: A <code>data.frame</code> containing the p-values, edge weights and the CIs for each edge in the network.</li>
+</ul>
+<p>Then we print specifically those edges that we found to be non-significant by the bootstrap (p-value greater than 0.05), offering insights into the stability of the network structure.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform bootstrapping on the TNA model with a fixed seed for reproducibility</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">265</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(model, <span class="at">threshold =</span> <span class="fl">0.05</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Print a summary of the bootstrap results</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">summary</span>(boot))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the non-significant edges (p-value &gt;= 0.05 in this case)</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># These are edges that are less likely to be stable across bootstrap samples</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(boot, <span class="at">type =</span> <span class="st">"nonsig"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="permutation" class="level4">
+<h4 class="anchored" data-anchor-id="permutation">Permutation</h4>
+<p>TNA uses advanced statistical methods to compare models and determine if the differences between them are statistically meaningful. A straightforward but less precise way is to look at the raw differences in edge weights between models. This method can give a quick visual comparison, but it doesn’t provide the statistical rigor needed to confirm that these differences aren’t just due to random chance.</p>
+<p>To tackle this issue, TNA uses a more rigorous approach through permutation. Permutation involves the generation of a distribution of differences by repeatedly shuffling and comparing the data. For each edge, the test provides a p-value, which helps researchers identify statistically significant differences. This rigorous approach ensures that the insights gained from TNA are not merely artifacts of chance but reflect true underlying differences. No other statistical method that offers such rigor in comparison of groups.</p>
+<p>Let’s look at an example using TNA to compare the transition networks of high achievers and low achievers with data from the <code>group_regulation</code> dataset. First, we create two separate TNA models—one for high achievers and one for low achievers. Then, we use the <code>plot_compare()</code> function to plot a simple comparison between these models, which just subtracts the edge weights without assessing statistical significance (<strong>?@fig-permutation-1</strong>).</p>
+<p>To determine the statistical significance of the differences between the two models, a permutation test is performed using the <code>permutation_test()</code> function. The <code>measures="Betweenness"</code> argument specifies that the test also should compute the differences in betweenness centrality. The results of the permutation test are then plotted using the <code>plot()</code> function, which displays the significant differences between the transition networks of high-achievers and low-achievers (<strong>?@fig-permutation-2</strong>). Finally, we can use the <code>print()</code> function to print the results of the permutation test or just print specific parts of the results, like the significantly different edges, or centralities.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Permutation<span class="sc">$</span>edges<span class="sc">$</span>stats)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(Permutation<span class="sc">$</span>centralities<span class="sc">$</span>stats)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="estimating-the-stability-of-centralities" class="level4">
+<h4 class="anchored" data-anchor-id="estimating-the-stability-of-centralities">Estimating the stability of centralities</h4>
+<p>While most centrality calculation methods in traditional network analysis have no statistical method to verify their strength or reliability, TNA introduces a statistical method, the case-dropping bootstrap which is a technique to estimate the stability of centrality measures in networks. The “case-dropping” — as the name implies — refers to systematically removing a subset of observations or nodes from the network, recalculating the centrality indices each time, and then evaluating how much these recalculated values correlate with the original ones. This helps determine the correlation-stability of centrality measures. This technique allows us to assess whether the centrality indices are robust and not overly sensitive to slight variations in the network data. A high correlation-stability coefficient indicates that the centrality indices are robust, meaning they remain relatively consistent and the identified key nodes are reliably central in the network. Conversely, if the correlation coefficients vary widely or are consistently low, it indicates that the results may not be dependable.</p>
+<p>The correlation-stability coefficients are useful for several reasons. Firstly, they emphasize the reliability of findings by ensuring that the identified influential nodes are not artifacts of a particular dataset or influenced by random variations. Secondly, they improve the generalizability of the results, as stable centrality measures are more likely to reflect underlying patterns that persist across different samples or conditions.</p>
+</section>
+<section id="interpreting-the-results-of-the-case-dropping-bootstrap-for-centrality-indices" class="level4">
+<h4 class="anchored" data-anchor-id="interpreting-the-results-of-the-case-dropping-bootstrap-for-centrality-indices">Interpreting the Results of the Case-Dropping Bootstrap for Centrality Indices</h4>
+<p>The case-dropping bootstrap results in a series of correlation coefficients that represent the relationship between the centrality measures in the original network and those in the networks with data removed. These coefficients typically range from -1 to 1, where values closer to 1 indicate a strong positive correlation, meaning the centrality rankings remain consistent even when data is omitted. A high average coefficient (e.g., above 0.7) suggests that the centrality measure is stable and reliable; the nodes identified as most central in the original network remain central even when some data are missing. This stability implies that findings about the importance of certain nodes are robust and not heavily influenced by specific data points. If the average correlation coefficient is moderate (e.g., between 0.5 and 0.7), it indicates that there is some variability in the centrality measures when data is removed, however it is still acceptable. A low average correlation coefficient (e.g., below 0.5) points to instability in the centrality measure and the results may not be reliable. This instability could stem from a small sample size or measurement errors in the data. It’s also important to compare the stability of different centrality measures. For example, degree centrality often shows higher stability because it relies on direct connections, whereas betweenness centrality may be less stable due to its dependence on the shortest paths, which can change significantly with the removal of edges or nodes.</p>
+<p>The code below assesses the centrality stability of centrality measures using the function named <code>estimate_centrality_stability()</code> (a shorthand alias <code>estimate_cs()</code> is also provided) which takes the model as the main argument. The results can be plotted in the usual way (<strong>?@fig-centrality-stability</strong>).</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Centrality_stability <span class="ot">&lt;-</span> <span class="fu">estimate_centrality_stability</span>(model, <span class="at">detailed =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(Centrality_stability)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
+<p>This chapter introduced Transition Network Analysis (TNA) as a novel methodological framework that models the temporal dynamics of the learning process. TNA provides a theoretically grounded approach to modeling the stochastic nature of learning processes. This aligns with established theoretical frameworks, such as Winne and Perry’s conceptualization of self-regulated learning through occurrences, contingencies, and patterns. TNA operationalizes these theoretical constructs through its network representation, allowing researchers to empirically investigate theoretical propositions about learning dynamics. The method’s ability to identify communities, clusters, and recurring patterns offers new opportunities for theory building in educational research. Thus, TNA can help researchers validate existing theoretical constructs through data-driven pattern identification, discover new behavioral mechanisms and learning strategies, develop more nuanced understanding of how different learning activities interconnect, and identify critical transition points that may serve as targets for intervention.</p>
+<p>In a way, TNA can be thought of as combining the temporal aspects of process mining with the analytical power of network theory to offer researchers a robust tool for understanding the complex dynamics of learning processes. The use of graph representation enhances PM by enabling researchers to examine the role of specific events in shaping learning processes through centrality measures. For example, measures such as betweenness centrality highlight nodes that bridge transitions, while in-degree centrality identifies events that receive the most transitions. Edge-level centralities provide further insights into the underlying dynamics of transitions, offering a deeper understanding of how learning unfolds. These measures and capabilities are hardly present in process mining with some exceptions like fuzzy miner, yet they are rather few, incomplete and not easy to interpret <span class="citation" data-cites="pan2021">(<a href="#ref-pan2021" role="doc-biblioref">Pan and Zhang 2021</a>)</span>. Also, TNA employs community detection to explore events that co-occur, revealing patterns that reflect behaviors and strategies. On the other hand, PM enhances network analysis by enabling the identification of clusters representing typical transition patterns, which are widely used to capture students’ tactics and strategies. However, TNA offers more than combination of either methods. The incorporation of bootstrapping provides a rigorous way to assess model stability and filter out unreliable connections. Similarly, permutation and case-dropping for assessing statistical inferences of models.</p>
+<p>A significant contribution of TNA is its incorporation of robust statistical validation techniques. The implementation of bootstrapping methods addresses a critical gap in current process mining and network analysis approaches in education. This advancement enables identification of significant transitions through confidence intervals and p-values, helps filter out spurious connections leading to more reliable models, provides a framework for assessing the generalizability of findings, and supports more rigorous hypothesis testing and theory validation. Furthermore, TNA’s ability to systematically compare different learning processes through permutation testing represents a methodological advance over simple visual comparison. Permutation allows researchers to identify statistically significant differences between learning processes across different contexts.</p>
+<p>However, several limitations should be considered when applying TNA. The method assumes Markovian properties, which may not fully capture some aspects of learning processes (refer to <span class="citation" data-cites="LABOOK2_Chapter_16">(<a href="#ref-LABOOK2_Chapter_16" role="doc-biblioref">Saqr et al. 2025</a>)</span> for a frequency-based approach). Interpretation of network measures requires careful consideration of the educational context, and the approach may be computationally intensive for very large datasets. Additionally, some network measures may not be meaningful in fully connected networks. Future research should focus on developing additional validation techniques specific to educational contexts, extending the method to handle multi-level and longitudinal data, investigating the integration of TNA with other analytical approaches, creating user-friendly tools and guidelines for educational practitioners, and exploring applications in different educational domains and contexts.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-aa1994" class="csl-entry" role="listitem">
+AA, Christopher Z. Mooney, and Robert D. Duval. 1994. <span>“Bootstrapping: A Nonparametric Approach to Statistical Inference.”</span> <em>Journal of the American Statistical Association</em> 89 (427): 1150. <a href="https://doi.org/10.2307/2290969">https://doi.org/10.2307/2290969</a>.
+</div>
+<div id="ref-Borgatti2009-ec" class="csl-entry" role="listitem">
+Borgatti, Stephen P, Ajay Mehra, Daniel J Brass, and Giuseppe Labianca. 2009. <span>“Network Analysis in the Social Sciences.”</span> <em>Science</em> 323: 892–95. <a href="https://doi.org/10.1126/science.1165821">https://doi.org/10.1126/science.1165821</a>.
+</div>
+<div id="ref-vanborkulo2023" class="csl-entry" role="listitem">
+Borkulo, Claudia D. van, Riet van Bork, Lynn Boschloo, et al. 2023. <span>“Comparing Network Structures on Three Aspects: A Permutation Test.”</span> <em>Psychological Methods</em> 28 (6): 1273–85. <a href="https://doi.org/10.1037/met0000476">https://doi.org/10.1037/met0000476</a>.
+</div>
+<div id="ref-Csardi2006-uq" class="csl-entry" role="listitem">
+Csardi, Gabor, and Tamas Nepusz. 2006. <span>“The Igraph Software Package for Complex Network Research.”</span> <em>InterJournal</em> Complex Sy: 1695. <a href="http://igraph.org">http://igraph.org</a>.
+</div>
+<div id="ref-elmoazen2022" class="csl-entry" role="listitem">
+Elmoazen, Ramy, Mohammed Saqr, Matti Tedre, and Laura Hirsto. 2022. <span>“A Systematic Literature Review of Empirical Research on Epistemic Network Analysis in Education.”</span> <em>IEEE Access</em> 10: 17330–48. <a href="https://doi.org/10.1109/access.2022.3149812">https://doi.org/10.1109/access.2022.3149812</a>.
+</div>
+<div id="ref-epskamp2017a" class="csl-entry" role="listitem">
+Epskamp, Sacha, Denny Borsboom, and Eiko I. Fried. 2017. <span>“Estimating Psychological Networks and Their Accuracy: A Tutorial Paper.”</span> <em>Behavior Research Methods</em> 50 (1): 195–212. <a href="https://doi.org/10.3758/s13428-017-0862-1">https://doi.org/10.3758/s13428-017-0862-1</a>.
+</div>
+<div id="ref-Epskamp2012-ij" class="csl-entry" role="listitem">
+Epskamp, Sacha, Angélique O J Cramer, Lourens J Waldorp, Verena D Schmittmann, and Denny Borsboom. 2012. <span>“Qgraph: Network Visualizations of Relationships in Psychometric Data.”</span> <em>Journal of Statistical Software</em> 48. <a href="https://doi.org/10.18637/jss.v048.i04">https://doi.org/10.18637/jss.v048.i04</a>.
+</div>
+<div id="ref-epskamp2017" class="csl-entry" role="listitem">
+Epskamp, Sacha, Mijke Rhemtulla, and Denny Borsboom. 2017. <span>“Generalized Network Psychometrics: Combining Network and Latent Variable Models.”</span> <em>Psychometrika</em> 82 (4): 904–27. <a href="https://doi.org/10.1007/s11336-017-9557-x">https://doi.org/10.1007/s11336-017-9557-x</a>.
+</div>
+<div id="ref-fan2021" class="csl-entry" role="listitem">
+Fan, Yizhou, Wannisa Matcha, Nora’ayu Ahmad Uzir, Qiong Wang, and Dragan Gaševic. 2021. <span>“Learning Analytics to Reveal Links Between Learning Design and Self-Regulated Learning.”</span> <em>International Journal of Artificial Intelligence in Education</em> 31 (4): 980–1021.
+</div>
+<div id="ref-helske2024" class="csl-entry" role="listitem">
+Helske, Jouni, Satu Helske, Mohammed Saqr, Sonsoles López-Pernas, and Keefe Murphy. 2024. <span>“A Modern Approach to Transition Analysis and Process Mining with Markov Models in Education.”</span> In <em>Springer Nature Switzerland</em>. <a href="https://doi.org/10.1007/978-3-031-54464-4_12">https://doi.org/10.1007/978-3-031-54464-4_12</a>.
+</div>
+<div id="ref-hernández-garcía2024" class="csl-entry" role="listitem">
+Hernández-García, Ángel, Carlos Cuenca-Enrique, Adrienne Traxler, Sonsoles López-Pernas, Miguel Ángel Conde-González, and Mohammed Saqr. 2024. <em>Community Detection in Learning Networks Using r</em>. Springer Nature Switzerland. <a href="https://doi.org/10.1007/978-3-031-54464-4_16">https://doi.org/10.1007/978-3-031-54464-4_16</a>.
+</div>
+<div id="ref-Hilpert2018-mu" class="csl-entry" role="listitem">
+Hilpert, Jonathan C, and Gwen C Marchand. 2018. <span>“Complex Systems Research in Educational Psychology: Aligning Theory and Method.”</span> <em>Educational Psychologist</em> 53: 185–202. <a href="https://doi.org/10.1080/00461520.2018.1469411">https://doi.org/10.1080/00461520.2018.1469411</a>.
+</div>
+<div id="ref-Kaplan2020-kz" class="csl-entry" role="listitem">
+Kaplan, Avi, and Joanna K Garner. 2020. <span>“Steps for Applying the Complex Dynamical Systems Approach in Educational Research: A Guide for the Perplexed Scholar.”</span> <em>Journal of Experimental Education</em> 88 (May): 486–502. <a href="https://doi.org/10.1080/00220973.2020.1745738">https://doi.org/10.1080/00220973.2020.1745738</a>.
+</div>
+<div id="ref-Koller2009-kv" class="csl-entry" role="listitem">
+Koller, Daphne, and Nir Friedman. 2009. <em>Probabilistic Graphical Models: Principles and Techniques</em>. MIT Press.
+</div>
+<div id="ref-Kopra2024-fx" class="csl-entry" role="listitem">
+Kopra, Juho, Santtu Tikka, Merja Heinäniemi, Sonsoles López-Pernas, and Mohammed Saqr. 2024. <span>“An <span>R</span> Approach to Data Cleaning and Wrangling for Education Research.”</span> In <em>Learning Analytics Methods and Tutorials: A Practical Guide Using r</em>, edited by Mohammed Saqr and Sonsoles López-Pernas. Springer.
+</div>
+<div id="ref-Lopez-Pernas2024-ge" class="csl-entry" role="listitem">
+López-Pernas, Sonsoles, Kamila Misiejuk, Santtu Tikka, Juho Kopra, Merja Heinäniemi, and Mohammed Saqr. 2024. <span>“Visualizing and Reporting Educational Data with <span>R</span>.”</span> In <em>Learning Analytics Methods and Tutorials</em>. Springer Nature Switzerland. <a href="https://doi.org/10.1007/978-3-031-54464-4\_6">https://doi.org/10.1007/978-3-031-54464-4\_6</a>.
+</div>
+<div id="ref-LABOOK2_Chapter_17" class="csl-entry" role="listitem">
+López-Pernas, Sonsoles, Santtu Tikka, and Mohammed Saqr. 2025. <span>“Mining Patterns and Clusters with Transition Network Analysis: A Heterogeneity Approach.”</span> In <em>Advanced Learning Analytics Methods: AI, Precision and Complexity</em>, edited by Mohammed Saqr and Sonsoles López-Pernas. Springer Nature Switzerland.
+</div>
+<div id="ref-malmberg2022" class="csl-entry" role="listitem">
+Malmberg, Jonna, Mohammed Saqr, Hanna Järvenoja, and Sanna Järvelä. 2022. <span>“How the Monitoring Events of Individual Students Are Associated with Phases of Regulation.”</span> <em>Journal of Learning Analytics</em> 9 (1): 77–92. <a href="https://doi.org/10.18608/jla.2022.7429">https://doi.org/10.18608/jla.2022.7429</a>.
+</div>
+<div id="ref-neal2022" class="csl-entry" role="listitem">
+Neal, Zachary P. 2022. <span>“Backbone: An r Package to Extract Network Backbones.”</span> <em>PLOS ONE</em> 17 (5): e0269137. <a href="https://doi.org/10.1371/journal.pone.0269137">https://doi.org/10.1371/journal.pone.0269137</a>.
+</div>
+<div id="ref-network2021" class="csl-entry" role="listitem">
+<span>“Network Analysis of Multivariate Data in Psychological Science.”</span> 2021. <em>Nature Reviews Methods Primers</em> 1 (1). <a href="https://doi.org/10.1038/s43586-021-00060-z">https://doi.org/10.1038/s43586-021-00060-z</a>.
+</div>
+<div id="ref-Newman2018-vp" class="csl-entry" role="listitem">
+Newman, Mark. 2018. <em>Networks</em>. 2nd ed. Oxford University Press. <a href="https://doi.org/10.1093/oso/9780198805090.001.0001">https://doi.org/10.1093/oso/9780198805090.001.0001</a>.
+</div>
+<div id="ref-Nicolis2005-vu" class="csl-entry" role="listitem">
+Nicolis, G, A García Cantú, and C Nicolis. 2005. <span>“Dynamical Aspects of Interaction Networks.”</span> <em>International Journal of Bifurcation and Chaos in Applied Sciences and Engineering</em> 15: 3467–80. <a href="https://doi.org/10.1142/s0218127405014167">https://doi.org/10.1142/s0218127405014167</a>.
+</div>
+<div id="ref-pan2021" class="csl-entry" role="listitem">
+Pan, Yue, and Limao Zhang. 2021. <span>“Automated Process Discovery from Event Logs in BIM Construction Projects.”</span> <em>Automation in Construction</em> 127 (July): 103713. <a href="https://doi.org/10.1016/j.autcon.2021.103713">https://doi.org/10.1016/j.autcon.2021.103713</a>.
+</div>
+<div id="ref-Reimann2009-ah" class="csl-entry" role="listitem">
+Reimann, Peter. 2009. <span>“Time Is Precious: Variable- and Event-Centred Approaches to Process Analysis in <span>CSCL</span> Research.”</span> <em>International Journal of Computer-Supported Collaborative Learning</em> 4: 239–57. <a href="https://doi.org/10.1007/s11412-009-9070-z">https://doi.org/10.1007/s11412-009-9070-z</a>.
+</div>
+<div id="ref-Reimann2019-ry" class="csl-entry" role="listitem">
+Reimann, Peter. 2019. <span>“Methodological Progress in the Study of Self-Regulated Learning Enables Theory Advancement.”</span> <em>Learning and Instruction</em> 72: 101269. <a href="https://doi.org/10.1016/j.learninstruc.2019.101269">https://doi.org/10.1016/j.learninstruc.2019.101269</a>.
+</div>
+<div id="ref-saint2020" class="csl-entry" role="listitem">
+Saint, John, Dragan Gašević, Wannisa Matcha, Nora’Ayu Ahmad Uzir, and Abelardo Pardo. 2020. <span>“Combining Analytic Methods to Unlock Sequential and Temporal Patterns of Self-Regulated Learning.”</span> <em>Proceedings of the Tenth International Conference on Learning Analytics &amp; Knowledge</em>, March 13, 402–11. <a href="https://doi.org/10.1145/3375462.3375487">https://doi.org/10.1145/3375462.3375487</a>.
+</div>
+<div id="ref-saqr2022a" class="csl-entry" role="listitem">
+Saqr, Mohammed, Ramy Elmoazen, Matti Tedre, Sonsoles López-Pernas, and Laura Hirsto. 2022. <span>“How Well Centrality Measures Capture Student Achievement in Computer-Supported Collaborative Learning? <span></span> a Systematic Review and Meta-Analysis.”</span> <em>Educational Research Review</em> 35 (February): 100437. <a href="https://doi.org/10.1016/j.edurev.2022.100437">https://doi.org/10.1016/j.edurev.2022.100437</a>.
+</div>
+<div id="ref-Saqr2024-lv" class="csl-entry" role="listitem">
+Saqr, Mohammed, and Sonsoles López-Pernas. 2024. <span>“Mapping the Self in Self‐regulation Using Complex Dynamic Systems Approach.”</span> <em>British Journal of Educational Technology: Journal of the Council for Educational Technology</em>, ahead of print. <a href="https://doi.org/10.1111/bjet.13452">https://doi.org/10.1111/bjet.13452</a>.
+</div>
+<div id="ref-saqr2024a" class="csl-entry" role="listitem">
+Saqr, Mohammed, Sonsoles López-Pernas, Miguel Ángel Conde-González, and Ángel Hernández-García. 2024. <em>Social Network Analysis: A Primer, a Guide and a Tutorial in r</em>. Springer Nature Switzerland. <a href="https://doi.org/10.1007/978-3-031-54464-4_15">https://doi.org/10.1007/978-3-031-54464-4_15</a>.
+</div>
+<div id="ref-saqr2024b" class="csl-entry" role="listitem">
+Saqr, Mohammed, Sonsoles López-Pernas, Satu Helske, et al. 2024. <em>Sequence Analysis in Education: Principles, Technique, and Tutorial with r</em>. Springer Nature Switzerland. <a href="https://doi.org/10.1007/978-3-031-54464-4_10">https://doi.org/10.1007/978-3-031-54464-4_10</a>.
+</div>
+<div id="ref-saqr2023" class="csl-entry" role="listitem">
+Saqr, Mohammed, Sonsoles López-Pernas, Jelena Jovanović, and Dragan Gašević. 2023. <span>“Intense, Turbulent, or Wallowing in the Mire: A Longitudinal Study of Cross-Course Online Tactics, Strategies, and Trajectories.”</span> <em>The Internet and Higher Education</em> 57 (April): 100902. <a href="https://doi.org/10.1016/j.iheduc.2022.100902">https://doi.org/10.1016/j.iheduc.2022.100902</a>.
+</div>
+<div id="ref-LABOOK2_Chapter_16" class="csl-entry" role="listitem">
+Saqr, Mohammed, Sonsoles López-Pernas, and Santtu Tikka. 2025. <span>“Capturing the Breadth and Dynamics of the Temporal Processes with Frequency Transition Network Analysis: A Primer and Tutorial.”</span> In <em>Advanced Learning Analytics Methods: AI, Precision and Complexity</em>, edited by Mohammed Saqr and Sonsoles López-Pernas. Springer Nature Switzerland.
+</div>
+<div id="ref-Saqr2024" class="csl-entry" role="listitem">
+Saqr, Mohammed, Sonsoles López-Pernas, Tiina Törmänen, Rogers Kaliisa, Kamila Misiejuk, and Santtu Tikka. 2024a. <em>Transition Network Analysis: A Novel Framework for Modeling, Visualizing, and Identifying the Temporal Patterns of Learners and Learning Processes</em>. <a href="https://doi.org/10.48550/ARXIV.2411.15486">https://doi.org/10.48550/ARXIV.2411.15486</a>.
+</div>
+<div id="ref-tna" class="csl-entry" role="listitem">
+Saqr, Mohammed, Sonsoles López-Pernas, Tiina Törmänen, Rogers Kaliisa, Kamila Misiejuk, and Santtu Tikka. 2024b. <em>Transition Network Analysis: A Novel Framework for Modeling, Visualizing, and Identifying the Temporal Patterns of Learners and Learning Processes</em>. <a href="https://doi.org/10.48550/arXiv.2411.15486">https://doi.org/10.48550/arXiv.2411.15486</a>.
+</div>
+<div id="ref-saqr2020" class="csl-entry" role="listitem">
+Saqr, Mohammed, Jalal Nouri, Henriikka Vartiainen, and Matti Tedre. 2020. <span>“Robustness and Rich Clubs in Collaborative Learning Groups: A Learning Analytics Study Using Network Science.”</span> <em>Scientific Reports</em> 10 (1). <a href="https://doi.org/10.1038/s41598-020-71483-z">https://doi.org/10.1038/s41598-020-71483-z</a>.
+</div>
+<div id="ref-saqr2022" class="csl-entry" role="listitem">
+Saqr, Mohammed, and Ward Peeters. 2022. <span>“Temporal Networks in Collaborative Learning: A&nbsp;Case Study.”</span> <em>British Journal of Educational Technology</em> 53 (5): 1283–303. <a href="https://doi.org/10.1111/bjet.13187">https://doi.org/10.1111/bjet.13187</a>.
+</div>
+<div id="ref-Saqr2024-ti" class="csl-entry" role="listitem">
+Saqr, Mohammed, Marieke J Schreuder, and Sonsoles López-Pernas. 2024. <span>“Why Educational Research Needs a Complex System Revolution That Embraces Individual Differences, Heterogeneity, and Uncertainty.”</span> In <em>Learning Analytics Methods and Tutorials: A Practical Guide Using r</em>, edited by Mohammed Saqr and Sonsoles López-Pernas. Springer Nature Switzerland. <a href="https://doi.org/10.1007/978-3-031-54464-4_22">https://doi.org/10.1007/978-3-031-54464-4_22</a>.
+</div>
+<div id="ref-schnakenberg1976" class="csl-entry" role="listitem">
+Schnakenberg, J. 1976. <span>“Network Theory of Microscopic and Macroscopic Behavior of Master Equation Systems.”</span> <em>Reviews of Modern Physics</em> 48 (4): 571–85. <a href="https://doi.org/10.1103/revmodphys.48.571">https://doi.org/10.1103/revmodphys.48.571</a>.
+</div>
+<div id="ref-Tikka2024-ph" class="csl-entry" role="listitem">
+Tikka, Santtu, Juho Kopra, Merja Heinäniemi, Sonsoles López-Pernas, and Mohammed Saqr. 2024a. <span>“Getting Started with <span>R</span> for Education Research.”</span> In <em>Learning Analytics Methods and Tutorials: A Practical Guide Using r</em>, edited by Mohammed Saqr and Sonsoles López-Pernas. Springer.
+</div>
+<div id="ref-Tikka2024-wl" class="csl-entry" role="listitem">
+Tikka, Santtu, Juho Kopra, Merja Heinäniemi, Sonsoles López-Pernas, and Mohammed Saqr. 2024b. <span>“Introductory Statistics with <span>R</span> for Educational Researchers.”</span> In <em>Learning Analytics Methods and Tutorials: A Practical Guide Using r</em>, edited by Mohammed Saqr and Sonsoles López-Pernas. Springer.
+</div>
+<div id="ref-tna_package" class="csl-entry" role="listitem">
+Tikka, Santtu, Sonsoles López-Pernas, and Mohammed Saqr. 2025. <span>“Tna: An r Package for Transition Network Analysis.”</span> <em>Applied Psychological Measurement</em> 49 (6): 326–28. <a href="https://doi.org/10.1177/01466216251348840">https://doi.org/10.1177/01466216251348840</a>.
+</div>
+<div id="ref-tidyverse" class="csl-entry" role="listitem">
+Wickham, Hadley, Mara Averick, Jennifer Bryan, et al. 2019. <span>“Welcome to the <span class="nocase">tidyverse</span>.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+<div id="ref-winne2010" class="csl-entry" role="listitem">
+Winne, Philip H. 2010. <span>“Improving Measurements of Self-Regulated Learning.”</span> <em>Educational Psychologist</em> 45 (4): 267–76. <a href="https://doi.org/10.1080/00461520.2010.517150">https://doi.org/10.1080/00461520.2010.517150</a>.
+</div>
+<div id="ref-Winne2000-mo" class="csl-entry" role="listitem">
+Winne, Philip H, and Nancy E Perry. 2000. <span>“Measuring Self-Regulated Learning.”</span> In <em>Handbook of Self-Regulation</em>. <a href="https://doi.org/10.1016/B978-012109890-2/50045-7">https://doi.org/10.1016/B978-012109890-2/50045-7</a>.
+</div>
+<div id="ref-Zou2019-ss" class="csl-entry" role="listitem">
+Zou, Yong, Reik V Donner, Norbert Marwan, Jonathan F Donges, and Jürgen Kurths. 2019. <span>“Complex Network Approaches to Nonlinear Time Series Analysis.”</span> <em>Physics Reports</em> 787: 1–97. <a href="https://doi.org/10.1016/j.physrep.2018.10.005">https://doi.org/10.1016/j.physrep.2018.10.005</a>.
+</div>
+</div>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{saqr,
+  author = {Saqr, Mohammed and López-Pernas, Sonsoles and Tikka, Santtu},
+  title = {Mapping {Relational} {Dynamics} with {Transition} {Network}
+    {Analysis:} {A} {Primer} and {Tutorial}},
+  pages = {371-411},
+  doi = {10.1007/978-3-031-95365-1_15},
+  langid = {en},
+  abstract = {This chapter presents Transition Network Analysis (TNA)
+    that captures the full breadth of the relational dynamics of a
+    temporal process. TNA models transitions between events as a
+    weighted directed network. In doing so, TNA brings the wealth of
+    network analysis to the modeled process which include graph, node
+    and edge level metrics. TNA also enables the detection of recurring
+    patterns such as dyads or triads, and communities and clusters. More
+    importantly, TNA allows researchers to statistically validate the
+    findings using bootstrapping, permutation, and case dropping
+    techniques to verify if and when the research conclusions are
+    correct. Furthermore, TNA allows researchers to include covariates
+    that would explain why certain patterns emerge or examine the
+    differences across subgroups. Such statistical rigor that brings
+    validation and hypothesis testing at each step of the analysis
+    offers a method for researchers to build, verify and advance
+    existing theories and develop new ones on the basis of a robust
+    scientific approach. This chapter offers a step-by-step tutorial
+    using the `tna` R package, illustrating all the TNA features in a
+    case study about group regulation.}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-saqr" class="csl-entry quarto-appendix-citeas" role="listitem">
+Saqr, Mohammed, Sonsoles López-Pernas, and Santtu Tikka. n.d.
+<span>“Mapping Relational Dynamics with Transition Network Analysis: A
+Primer and Tutorial.”</span> <a href="https://doi.org/10.1007/978-3-031-95365-1_15">https://doi.org/10.1007/978-3-031-95365-1_15</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

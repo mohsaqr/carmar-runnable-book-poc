@@ -1215,6 +1215,7 @@
     if (!WS) throw new Error("carmar: no WebSocket implementation available");
     if (!url) throw new Error("carmar: kernel url is required");
     let sock = null;
+    let beat = null;
     let status = "idle";
     let info = null;
     let seq = 0;
@@ -1227,6 +1228,13 @@
     const setStatus = (s) => {
       status = s;
       if (onStatus) onStatus(s);
+    };
+    const HEARTBEAT_MS = 25e3;
+    const stopBeat = () => {
+      if (beat) {
+        clearInterval(beat);
+        beat = null;
+      }
     };
     const blankAcc = () => ({
       stdout: [],
@@ -1418,6 +1426,17 @@
         if (sock) return this.whenReady();
         setStatus("connecting");
         sock = new WS(url);
+        sock.addEventListener("open", () => {
+          stopBeat();
+          beat = setInterval(() => {
+            if (!sock || sock.readyState !== 1) return;
+            try {
+              sock.send(JSON.stringify({ type: "hb" }));
+            } catch (e) {
+            }
+          }, HEARTBEAT_MS);
+          if (beat && typeof beat.unref === "function") beat.unref();
+        });
         sock.addEventListener("message", (ev) => {
           let frame = null;
           try {
@@ -1428,10 +1447,12 @@
           handle(frame);
         });
         sock.addEventListener("close", () => {
+          stopBeat();
           setStatus("closed");
           failAll(new Error("Connection to the R kernel closed."));
         });
         sock.addEventListener("error", () => {
+          stopBeat();
           setStatus("error");
           failAll(new Error("Could not reach the R kernel."));
         });
@@ -11350,7 +11371,7 @@ ${xref}
 .carmar-published-root .cell-form{padding:10px;}
 .carmar-published-root .cell-result{padding:0 10px 10px;}
 .carmar-published-root .carmar-original-source{display:none!important;}
-.cn-root.carmar-published-session-root{min-height:0;background:transparent;margin:1rem 0;}
+.cn-root.carmar-published-session-root{min-height:0;background:transparent;margin:1rem 0;position:sticky;top:calc(var(--carmar-published-sticky-top, 0px) + .65rem);z-index:1015;}
 .carmar-published-session{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--cn-border);border-radius:var(--cn-radius-md);background:var(--cn-surface);box-shadow:var(--cn-shadow-sm);}
 .carmar-published-session .carmar-runtime-state{margin:0;min-width:190px;}
 .carmar-published-session-copy{flex:1 1 250px;color:var(--cn-text-muted);font-size:var(--cn-fs-sm);}
@@ -11600,7 +11621,16 @@ ${PUBLISHED_CSS}`;
     actions.append(connect, runAll);
     bar.append(state, copy, actions);
     root.appendChild(bar);
-    firstRoot.before(root);
+    const titleBlock = doc.querySelector("#title-block-header");
+    if (titleBlock?.parentElement) titleBlock.after(root);
+    else firstRoot.before(root);
+    const fixedHeader = doc.querySelector(".navbar.fixed-top, header.fixed-top");
+    if (fixedHeader) {
+      root.style.setProperty(
+        "--carmar-published-sticky-top",
+        `${Math.ceil(fixedHeader.getBoundingClientRect().height)}px`
+      );
+    }
     const setStatus = (next, text) => {
       bar.dataset.state = next;
       title.textContent = next === "ready" ? "CarmaR connected" : next === "connecting" ? "Connecting to CarmaR" : "CarmaR not connected";
