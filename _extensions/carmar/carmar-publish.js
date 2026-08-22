@@ -402,6 +402,70 @@
     }
     root.append(wrap);
   }
+  function csvCell(value) {
+    if (value == null) return "";
+    const text = String(value);
+    return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  }
+  function tableCsv(table) {
+    const columns = Array.isArray(table?.columns) ? table.columns : [];
+    const rows = Array.isArray(table?.rows) ? table.rows : [];
+    return [
+      columns.map((column) => csvCell(column.name)).join(","),
+      ...rows.map((row) => columns.map((column) => csvCell(row?.[column.name])).join(","))
+    ].join("\r\n");
+  }
+  function textReport(result) {
+    const parts = [];
+    if (result?.stdout) parts.push(`Output
+${result.stdout}`);
+    (result?.messages || []).forEach((message) => {
+      parts.push(`${message.kind === "warning" ? "Warning" : "Message"}
+${message.text}`);
+    });
+    if (result?.stderr) parts.push(`R diagnostics
+${result.stderr}`);
+    if (result?.message) parts.push(`Error
+${result.message}`);
+    return `${parts.join("\n\n") || "Completed."}
+`;
+  }
+  function exportLink(doc, label, filename, href) {
+    const link = element(doc, "a", "carmar-published-export-link", label);
+    link.href = href;
+    link.download = filename;
+    return link;
+  }
+  function updateExports(doc, menu, result, cellNumber) {
+    const list = menu.querySelector(".carmar-published-export-list");
+    list.replaceChildren();
+    const prefix = `carmar-chunk-${cellNumber}`;
+    list.append(exportLink(
+      doc,
+      "Result (.txt)",
+      `${prefix}.txt`,
+      `data:text/plain;charset=utf-8,${encodeURIComponent(textReport(result))}`
+    ));
+    (result?.tables || []).forEach((table, index) => {
+      list.append(exportLink(
+        doc,
+        `Table ${index + 1} (.csv)`,
+        `${prefix}-table-${index + 1}.csv`,
+        `data:text/csv;charset=utf-8,${encodeURIComponent(tableCsv(table))}`
+      ));
+    });
+    (result?.plots || []).forEach((plot, index) => {
+      const mime = plot.mime || "image/png";
+      const extension = mime === "image/svg+xml" ? "svg" : "png";
+      list.append(exportLink(
+        doc,
+        `Plot ${index + 1} (.${extension})`,
+        `${prefix}-plot-${index + 1}.${extension}`,
+        `data:${mime};base64,${plot.data}`
+      ));
+    });
+    menu.hidden = false;
+  }
   function renderPublishedResult(result, root) {
     const doc = root.ownerDocument;
     root.replaceChildren();
@@ -581,7 +645,7 @@
       }
     };
   }
-  function mountCell(doc, code, session) {
+  function mountCell(doc, code, session, cellNumber) {
     const cell = code.closest(".cell");
     const source = code.closest("div.sourceCode") || code.closest("pre") || code.parentElement;
     if (!cell || !source) return null;
@@ -594,12 +658,18 @@
     editor.spellcheck = false;
     editor.setAttribute("aria-label", "Editable R code");
     const toolbar = element(doc, "div", "carmar-published-cell-toolbar");
-    const run = element(doc, "button", "carmar-published-run", "\u25B6 Run");
+    const run = element(doc, "button", "carmar-published-run", "\u25B6 Run in CarmaR");
     run.type = "button";
     const edit = element(doc, "button", "carmar-published-edit", "Edit");
     edit.type = "button";
+    const exports = element(doc, "details", "carmar-published-exports");
+    exports.hidden = true;
+    exports.append(
+      element(doc, "summary", "", "Export"),
+      element(doc, "div", "carmar-published-export-list")
+    );
     const state = element(doc, "span", "carmar-published-cell-state", "Not run");
-    toolbar.append(run, edit, state);
+    toolbar.append(run, edit, exports, state);
     const output = element(doc, "div", "carmar-published-output");
     output.hidden = true;
     source.after(editor, toolbar, output);
@@ -629,6 +699,7 @@
       try {
         const result = await session.run(sourceText);
         renderPublishedResult(result, output);
+        updateExports(doc, exports, result, cellNumber);
         state.textContent = result.status === "ok" ? "Done" : result.status === "interrupted" ? "Interrupted" : "Error";
         cell.dataset.carmarStatus = result.status;
       } catch (error) {
@@ -638,7 +709,7 @@
         throw error;
       } finally {
         run.disabled = false;
-        run.textContent = "\u25B6 Run";
+        run.textContent = "\u25B6 Run in CarmaR";
       }
     };
     run.addEventListener("click", () => {
@@ -654,6 +725,7 @@
     const firstCell = blocks[0].closest(".cell");
     const launcher = element(doc, "aside", "carmar-published-launcher");
     const brand = element(doc, "strong", "carmar-published-brand", "CarmaR");
+    const bridgeState = element(doc, "span", "carmar-published-bridge-state", "Bridge disconnected");
     const message = element(
       doc,
       "span",
@@ -665,16 +737,17 @@
     const runAll = element(doc, "button", "carmar-published-run-all", "Run all");
     runAll.type = "button";
     runAll.hidden = true;
-    launcher.append(brand, message, connect, runAll);
+    launcher.append(brand, bridgeState, message, connect, runAll);
     firstCell.before(launcher);
     const setStatus = (state, text) => {
       launcher.dataset.status = state;
+      bridgeState.textContent = state === "ready" ? "Bridge connected" : state === "pairing" || state === "connecting" ? "Bridge connecting" : "Bridge disconnected";
       message.textContent = text;
       connect.hidden = state === "ready";
       runAll.hidden = state !== "ready";
     };
     const session = createPublishedSession(win, config, setStatus);
-    const cells = blocks.map((code) => mountCell(doc, code, session)).filter(Boolean);
+    const cells = blocks.map((code, index) => mountCell(doc, code, session, index + 1)).filter(Boolean);
     connect.addEventListener("click", async () => {
       connect.disabled = true;
       try {

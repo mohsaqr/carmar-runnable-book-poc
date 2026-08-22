@@ -13,6 +13,27 @@
 
 .carmar-published-brand { color: #234fa7; }
 .carmar-published-session-state { flex: 1 1 18rem; }
+.carmar-published-bridge-state {
+  display: inline-flex;
+  align-items: center;
+  gap: .38rem;
+  font-size: .82rem;
+  font-weight: 700;
+  color: #687489;
+}
+.carmar-published-bridge-state::before {
+  content: "";
+  width: .58rem;
+  height: .58rem;
+  border-radius: 50%;
+  background: #8994a6;
+  box-shadow: 0 0 0 3px #e1e5ec;
+}
+.carmar-published-launcher[data-status="ready"] .carmar-published-bridge-state { color: #176440; }
+.carmar-published-launcher[data-status="ready"] .carmar-published-bridge-state::before {
+  background: #25a66a;
+  box-shadow: 0 0 0 3px #d8f2e5;
+}
 
 .carmar-published-launcher button,
 .carmar-published-cell-toolbar button {
@@ -31,7 +52,12 @@
 .carmar-published-cell-toolbar button:disabled { cursor: wait; opacity: .65; }
 
 .carmar-published-connect,
-.carmar-published-run { border-color: #2859c5 !important; color: #1746ad !important; font-weight: 650 !important; }
+.carmar-published-run {
+  border-color: #2859c5 !important;
+  background: #2859c5 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
 
 .carmar-published-cell { border-left: 3px solid transparent; padding-left: .55rem; }
 .carmar-published-cell[data-carmar-status="running"] { border-left-color: #2859c5; }
@@ -46,6 +72,39 @@
 }
 
 .carmar-published-cell-state { margin-left: auto; color: #687489; font-size: .85rem; }
+.carmar-published-exports { position: relative; font-size: .9rem; }
+.carmar-published-exports summary {
+  list-style: none;
+  border: 1px solid #9eacc2;
+  border-radius: .42rem;
+  background: #fff;
+  color: #1d2b44;
+  padding: .38rem .68rem;
+  cursor: pointer;
+  user-select: none;
+}
+.carmar-published-exports summary::-webkit-details-marker { display: none; }
+.carmar-published-export-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + .3rem);
+  left: 0;
+  min-width: 11rem;
+  padding: .3rem;
+  border: 1px solid #cbd5e4;
+  border-radius: .45rem;
+  background: #fff;
+  box-shadow: 0 .5rem 1.3rem rgba(31, 47, 74, .16);
+}
+.carmar-published-export-link {
+  display: block;
+  padding: .42rem .55rem;
+  border-radius: .3rem;
+  color: #1746ad !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+.carmar-published-export-link:hover { background: #edf3ff; }
 .carmar-published-editor {
   box-sizing: border-box;
   width: 100%;
@@ -70,7 +129,16 @@
 
 .carmar-published-output[data-status="error"] { border-color: #e1a7ab; background: #fff8f8; }
 .carmar-published-output-label { margin-bottom: .25rem; color: #5d687b; font-size: .78rem; font-weight: 700; text-transform: uppercase; }
-.carmar-published-stream pre { margin: 0 0 .65rem; padding: .55rem; overflow: auto; white-space: pre-wrap; }
+.carmar-published-stream pre {
+  margin: 0 0 .65rem;
+  padding: .6rem .7rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  border: 1px solid #e0e6ef !important;
+  border-radius: .35rem;
+  background: #f7f9fc !important;
+  color: #18243a !important;
+}
 .carmar-published-stream.warning pre { color: #725400; }
 .carmar-published-stream.error pre,
 .carmar-published-stream.stderr pre { color: #9b2830; }
@@ -81,12 +149,3 @@
 .carmar-published-table td { border: 1px solid #d7deea; padding: .35rem .5rem; text-align: left; }
 .carmar-published-table th { background: #f1f4f9; }
 .carmar-published-note { color: #687489; font-size: .88rem; }
-
-@media (prefers-color-scheme: dark) {
-  .carmar-published-launcher,
-  .carmar-published-output,
-  .carmar-published-editor { color: #e8edf7; background: #171d28; border-color: #46536a; }
-  .carmar-published-launcher button,
-  .carmar-published-cell-toolbar button { color: #e8edf7; background: #222b39; border-color: #59677d; }
-  .carmar-published-table th { background: #222b39; }
-}
