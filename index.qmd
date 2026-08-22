@@ -14,8 +14,11 @@ Run these two lines once in your R console:
 
 ```r
 source("https://mohsaqr.github.io/carmar-runnable-book-poc/install.R")
-carmar::run(open = FALSE, new = FALSE)
 ```
+
+The installer starts or reuses the correct local engine. If an older CarmaR is
+already running, it replaces that stale process so the pairing route cannot
+return `not found`.
 
 Then press **Run on my computer** above the first active chunk. CarmaR opens a
 small local consent window naming this site. Keep it open while using the

@@ -11,7 +11,7 @@
     "href": "index.html#start-local-carmar",
     "title": "A published chapter that runs on your computer",
     "section": "Start local CarmaR",
-    "text": "Start local CarmaR\nRun these two lines once in your R console:\nsource(\"https://mohsaqr.github.io/carmar-runnable-book-poc/install.R\")\ncarmar::run(open = FALSE, new = FALSE)\nThen press Run on my computer above the first active chunk. CarmaR opens a small local consent window naming this site. Keep it open while using the chapter. Nothing executes until you press a chunk’s Run button."
+    "text": "Start local CarmaR\nRun these two lines once in your R console:\nsource(\"https://mohsaqr.github.io/carmar-runnable-book-poc/install.R\")\nThe installer starts or reuses the correct local engine. If an older CarmaR is already running, it replaces that stale process so the pairing route cannot return not found.\nThen press Run on my computer above the first active chunk. CarmaR opens a small local consent window naming this site. Keep it open while using the chapter. Nothing executes until you press a chunk’s Run button."
   },
   {
     "objectID": "index.html#create-a-dataset",

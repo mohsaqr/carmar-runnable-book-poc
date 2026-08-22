@@ -5,6 +5,16 @@ CarmaR/R session and return output inline.
 
 Live site: <https://mohsaqr.github.io/carmar-runnable-book-poc/>
 
+In R, install and start the local published-book engine with one command:
+
+```r
+source("https://mohsaqr.github.io/carmar-runnable-book-poc/install.R")
+```
+
+The launcher detects and cleanly replaces a stale pre-pairing CarmaR process,
+which prevents the local `/pair` page from returning `not found` after an
+upgrade.
+
 The reusable publishing implementation is maintained on the
 [`feature/quarto-run-on-computer`](https://github.com/mohsaqr/CarmaR/tree/feature/quarto-run-on-computer)
 branch of CarmaR.

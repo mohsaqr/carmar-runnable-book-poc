@@ -7,5 +7,5 @@ package_url <- paste0(
   "carmar_0.50.39.tar.gz"
 )
 install.packages(package_url, repos = NULL, type = "source")
-message("CarmaR proof package installed. Start it with:")
-message("  carmar::run(open = FALSE, new = FALSE)")
+carmar::run_published()
+message("CarmaR is installed and ready for published R chunks.")
