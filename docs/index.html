@@ -156,7 +156,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#start-local-carmar" id="toc-start-local-carmar" class="nav-link active" data-scroll-target="#start-local-carmar">Start local CarmaR</a></li>
+  <li><a href="#run-locally" id="toc-run-locally" class="nav-link active" data-scroll-target="#run-locally">Run locally</a></li>
   <li><a href="#create-a-dataset" id="toc-create-a-dataset" class="nav-link" data-scroll-target="#create-a-dataset">1. Create a dataset</a></li>
   <li><a href="#continue-in-the-same-r-session" id="toc-continue-in-the-same-r-session" class="nav-link" data-scroll-target="#continue-in-the-same-r-session">2. Continue in the same R session</a></li>
   <li><a href="#produce-a-real-local-plot" id="toc-produce-a-real-local-plot" class="nav-link" data-scroll-target="#produce-a-real-local-plot">3. Produce a real local plot</a></li>
@@ -189,71 +189,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>This is a proof of concept for publishing a normal <code>.qmd</code> chapter with active R chunks. The page itself is static and hosted on GitHub Pages. When you press <strong>Run</strong>, the visible code executes in the R installation on your computer and the fresh result returns to this page.</p>
-<section id="start-local-carmar" class="level2">
-<h2 class="anchored" data-anchor-id="start-local-carmar">Start local CarmaR</h2>
-<p>Run these two lines once in your R console:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"https://mohsaqr.github.io/carmar-runnable-book-poc/install.R"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The installer starts or reuses the correct local engine. If an older CarmaR is already running, it replaces that stale process so the pairing route cannot return <code>not found</code>.</p>
-<p>Then press <strong>Run on my computer</strong> above the first active chunk. CarmaR opens a small local consent window naming this site. Keep it open while using the chapter. Nothing executes until you press a chunk’s <strong>Run</strong> button.</p>
+<section id="run-locally" class="level2">
+<h2 class="anchored" data-anchor-id="run-locally">Run locally</h2>
+<p>Install the current CarmaR app once. Then press <strong>Run on my computer</strong> or any chunk’s <strong>Run</strong> button. The browser may ask once whether this site may connect to software on your local network; choose <strong>Allow</strong>.</p>
+<p>CarmaR starts without a helper tab and the status above the chunks changes to <strong>CarmaR connected</strong>. Nothing executes until you press <strong>Run</strong>.</p>
 </section>
 <section id="create-a-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="create-a-dataset">1. Create a dataset</h2>
-<p>This first chunk creates data in your local R session. Click <strong>Edit</strong> if you want to change it before running.</p>
+<p>This first chunk creates data in your local R session. The code is editable; change it directly before running if you wish.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>study <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> <span class="fu">paste0</span>(<span class="st">"L"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>),</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"practice"</span>, <span class="st">"comparison"</span>), <span class="at">each =</span> <span class="dv">6</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">score_before =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">62</span>, <span class="dv">7</span>), <span class="dv">1</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>study<span class="sc">$</span>score_after <span class="ot">&lt;-</span> <span class="fu">round</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  study<span class="sc">$</span>score_before <span class="sc">+</span> <span class="fu">ifelse</span>(study<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"practice"</span>, <span class="dv">9</span>, <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>study</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>study <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">learner =</span> <span class="fu">paste0</span>(<span class="st">"L"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"practice"</span>, <span class="st">"comparison"</span>), <span class="at">each =</span> <span class="dv">6</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">score_before =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">62</span>, <span class="dv">7</span>), <span class="dv">1</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>study<span class="sc">$</span>score_after <span class="ot">&lt;-</span> <span class="fu">round</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  study<span class="sc">$</span>score_before <span class="sc">+</span> <span class="fu">ifelse</span>(study<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"practice"</span>, <span class="dv">9</span>, <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="dv">2</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>study</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="continue-in-the-same-r-session" class="level2">
 <h2 class="anchored" data-anchor-id="continue-in-the-same-r-session">2. Continue in the same R session</h2>
 <p>Cells share state. This chunk uses <code>study</code>, which was created above.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(score_before, score_after) <span class="sc">~</span> group,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> study,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> mean</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(score_before, score_after) <span class="sc">~</span> group,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> study,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> mean</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="produce-a-real-local-plot" class="level2">
 <h2 class="anchored" data-anchor-id="produce-a-real-local-plot">3. Produce a real local plot</h2>
 <p>The PNG is drawn by your installed R—not by JavaScript or webR—and returned to the published chapter.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(study<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"practice"</span>, <span class="st">"#2859c5"</span>, <span class="st">"#e28a2b"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  study<span class="sc">$</span>score_before,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  study<span class="sc">$</span>score_after,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> cols,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Score before"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Score after"</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Learning gains"</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey50"</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"topleft"</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Practice"</span>, <span class="st">"Comparison"</span>),</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"#2859c5"</span>, <span class="st">"#e28a2b"</span>),</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">"n"</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(study<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"practice"</span>, <span class="st">"#2859c5"</span>, <span class="st">"#e28a2b"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  study<span class="sc">$</span>score_before,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  study<span class="sc">$</span>score_after,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> cols,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Score before"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Score after"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Learning gains"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey50"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"topleft"</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Practice"</span>, <span class="st">"Comparison"</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"#2859c5"</span>, <span class="st">"#e28a2b"</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">"n"</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="fit-a-model-with-base-r" class="level2">
 <h2 class="anchored" data-anchor-id="fit-a-model-with-base-r">4. Fit a model with base R</h2>
 <p>No optional packages are needed for this proof.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(score_after <span class="sc">~</span> score_before <span class="sc">+</span> group, <span class="at">data =</span> study)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(fit))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(score_after <span class="sc">~</span> score_before <span class="sc">+</span> group, <span class="at">data =</span> study)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(fit))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="what-this-proves" class="level2">
@@ -261,12 +259,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>The source remains an ordinary Quarto <code>.qmd</code> file.</li>
 <li>The published result remains static HTML suitable for GitHub Pages.</li>
-<li>Every visible R chunk receives <strong>Edit</strong> and <strong>Run</strong> controls.</li>
+<li>Every visible R chunk becomes a real CarmaR editor with <strong>Run</strong> and <strong>Stop</strong>.</li>
 <li>Cells execute sequentially in one local R session.</li>
-<li>Console output, data frames, errors, warnings, and plots return inline.</li>
-<li>The public site never receives direct access to the loopback WebSocket.</li>
+<li>CarmaR’s console, data-frame, plot, and export components render inline.</li>
+<li>The native app authorizes only this exact publishing origin for this session.</li>
+<li>No extension, helper tab, AI panel, or per-chunk permission is involved.</li>
 </ul>
-<p>R code is not sandboxed: inspect unfamiliar chunks before running them. The local bridge disconnects when you close its small CarmaR window or stop the kernel.</p>
+<p>R code is not sandboxed: inspect unfamiliar chunks before running them.</p>
 
 
 </section>

@@ -1,10 +1,6 @@
 project:
   type: website
   output-dir: docs
-  resources:
-    - install.R
-    - carmar_0.50.39.tar.gz
-
 website:
   title: "CarmaR Runnable Book Proof"
   navbar:

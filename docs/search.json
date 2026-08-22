@@ -7,18 +7,18 @@
     "text": "This is a proof of concept for publishing a normal .qmd chapter with active R chunks. The page itself is static and hosted on GitHub Pages. When you press Run, the visible code executes in the R installation on your computer and the fresh result returns to this page."
   },
   {
-    "objectID": "index.html#start-local-carmar",
-    "href": "index.html#start-local-carmar",
+    "objectID": "index.html#run-locally",
+    "href": "index.html#run-locally",
     "title": "A published chapter that runs on your computer",
-    "section": "Start local CarmaR",
-    "text": "Start local CarmaR\nRun these two lines once in your R console:\nsource(\"https://mohsaqr.github.io/carmar-runnable-book-poc/install.R\")\nThe installer starts or reuses the correct local engine. If an older CarmaR is already running, it replaces that stale process so the pairing route cannot return not found.\nThen press Run on my computer above the first active chunk. CarmaR opens a small local consent window naming this site. Keep it open while using the chapter. Nothing executes until you press a chunk’s Run button."
+    "section": "Run locally",
+    "text": "Run locally\nInstall the current CarmaR app once. Then press Run on my computer or any chunk’s Run button. The browser may ask once whether this site may connect to software on your local network; choose Allow.\nCarmaR starts without a helper tab and the status above the chunks changes to CarmaR connected. Nothing executes until you press Run."
   },
   {
     "objectID": "index.html#create-a-dataset",
     "href": "index.html#create-a-dataset",
     "title": "A published chapter that runs on your computer",
     "section": "1. Create a dataset",
-    "text": "1. Create a dataset\nThis first chunk creates data in your local R session. Click Edit if you want to change it before running.\n\nset.seed(2026)\nstudy &lt;- data.frame(\n  learner = paste0(\"L\", 1:12),\n  group = rep(c(\"practice\", \"comparison\"), each = 6),\n  score_before = round(rnorm(12, 62, 7), 1)\n)\nstudy$score_after &lt;- round(\n  study$score_before + ifelse(study$group == \"practice\", 9, 3) + rnorm(12, 0, 2),\n  1\n)\nstudy"
+    "text": "1. Create a dataset\nThis first chunk creates data in your local R session. The code is editable; change it directly before running if you wish.\n\nset.seed(2026)\nstudy &lt;- data.frame(\n  learner = paste0(\"L\", 1:12),\n  group = rep(c(\"practice\", \"comparison\"), each = 6),\n  score_before = round(rnorm(12, 62, 7), 1)\n)\nstudy$score_after &lt;- round(\n  study$score_before + ifelse(study$group == \"practice\", 9, 3) + rnorm(12, 0, 2),\n  1\n)\nstudy"
   },
   {
     "objectID": "index.html#continue-in-the-same-r-session",
@@ -46,6 +46,6 @@
     "href": "index.html#what-this-proves",
     "title": "A published chapter that runs on your computer",
     "section": "What this proves",
-    "text": "What this proves\n\nThe source remains an ordinary Quarto .qmd file.\nThe published result remains static HTML suitable for GitHub Pages.\nEvery visible R chunk receives Edit and Run controls.\nCells execute sequentially in one local R session.\nConsole output, data frames, errors, warnings, and plots return inline.\nThe public site never receives direct access to the loopback WebSocket.\n\nR code is not sandboxed: inspect unfamiliar chunks before running them. The local bridge disconnects when you close its small CarmaR window or stop the kernel."
+    "text": "What this proves\n\nThe source remains an ordinary Quarto .qmd file.\nThe published result remains static HTML suitable for GitHub Pages.\nEvery visible R chunk becomes a real CarmaR editor with Run and Stop.\nCells execute sequentially in one local R session.\nCarmaR’s console, data-frame, plot, and export components render inline.\nThe native app authorizes only this exact publishing origin for this session.\nNo extension, helper tab, AI panel, or per-chunk permission is involved.\n\nR code is not sandboxed: inspect unfamiliar chunks before running them."
   }
 ]

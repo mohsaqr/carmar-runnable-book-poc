@@ -8,26 +8,19 @@ R chunks. The page itself is static and hosted on GitHub Pages. When you press
 **Run**, the visible code executes in the R installation on your computer and
 the fresh result returns to this page.
 
-## Start local CarmaR
+## Run locally
 
-Run these two lines once in your R console:
+Install the current CarmaR app once. Then press **Run on my computer** or any
+chunk's **Run** button. The browser may ask once whether this site may connect
+to software on your local network; choose **Allow**.
 
-```r
-source("https://mohsaqr.github.io/carmar-runnable-book-poc/install.R")
-```
-
-The installer starts or reuses the correct local engine. If an older CarmaR is
-already running, it replaces that stale process so the pairing route cannot
-return `not found`.
-
-Then press **Run on my computer** above the first active chunk. CarmaR opens a
-small local consent window naming this site. Keep it open while using the
-chapter. Nothing executes until you press a chunk's **Run** button.
+CarmaR starts without a helper tab and the status above the chunks changes to
+**CarmaR connected**. Nothing executes until you press **Run**.
 
 ## 1. Create a dataset
 
-This first chunk creates data in your local R session. Click **Edit** if you
-want to change it before running.
+This first chunk creates data in your local R session. The code is editable;
+change it directly before running if you wish.
 
 ```{r}
 #| eval: false
@@ -98,11 +91,10 @@ coef(summary(fit))
 
 - The source remains an ordinary Quarto `.qmd` file.
 - The published result remains static HTML suitable for GitHub Pages.
-- Every visible R chunk receives **Edit** and **Run** controls.
+- Every visible R chunk becomes a real CarmaR editor with **Run** and **Stop**.
 - Cells execute sequentially in one local R session.
-- Console output, data frames, errors, warnings, and plots return inline.
-- The public site never receives direct access to the loopback WebSocket.
+- CarmaR's console, data-frame, plot, and export components render inline.
+- The native app authorizes only this exact publishing origin for this session.
+- No extension, helper tab, AI panel, or per-chunk permission is involved.
 
-R code is not sandboxed: inspect unfamiliar chunks before running them. The
-local bridge disconnects when you close its small CarmaR window or stop the
-kernel.
+R code is not sandboxed: inspect unfamiliar chunks before running them.
