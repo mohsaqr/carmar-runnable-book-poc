@@ -485,6 +485,7 @@
         finishClose() {
           if (this.closed) return;
           this.closed = true;
+          activeBridge.closed = true;
           win.removeEventListener("message", this.receive);
           this.emit("close", {});
         }
@@ -537,7 +538,7 @@
         const receive = (event) => {
           const data = event.data;
           if (event.origin !== localOrigin || data?.type !== "carmar:paired" || data.origin !== pageOrigin || data.nonce !== nonce) return;
-          finish(null, { popup, nonce });
+          finish(null, { popup, nonce, closed: false });
         };
         const finish = (error, value = null) => {
           win.clearTimeout(timer);
@@ -552,10 +553,16 @@
       return pairing;
     }
     async function ready() {
-      if (kernel?.status === "ready") return kernel;
       const pageOrigin = win.location.origin;
       const needsBridge = /^https?:\/\//.test(pageOrigin) && pageOrigin !== localOrigin;
-      if (needsBridge && (!bridge || bridge.popup.closed)) {
+      if (needsBridge && bridge && (bridge.closed || bridge.popup.closed)) {
+        kernel?.close();
+        kernel = null;
+        bridge = null;
+        status("disconnected", "The local CarmaR window closed \u2014 approve it again to reconnect.");
+      }
+      if (kernel?.status === "ready") return kernel;
+      if (needsBridge && !bridge) {
         bridge = await pair();
       }
       return connect();
@@ -674,7 +681,7 @@
         await session.ready();
         setStatus("ready", "R ready \u2014 this page is running on your computer.");
       } catch (error) {
-        setStatus("error", `${String(error?.message || error)} Start CarmaR in R with carmar::run(open = FALSE, new = FALSE), then try again.`);
+        setStatus("error", `${String(error?.message || error)} Start CarmaR in R with carmar::run_published(), then try again.`);
       } finally {
         connect.disabled = false;
       }
