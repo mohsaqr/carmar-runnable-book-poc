@@ -1,0 +1,29 @@
+project:
+  type: website
+  output-dir: docs
+  resources:
+    - install.R
+    - carmar_0.50.39.tar.gz
+
+website:
+  title: "CarmaR Runnable Book Proof"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Live chapter
+    right:
+      - href: https://github.com/mohsaqr/CarmaR/tree/feature/quarto-run-on-computer
+        text: CarmaR source
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+
+filters:
+  - carmar
+
+carmar:
+  port: 4747
+  label: Run on my computer

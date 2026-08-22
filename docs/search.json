@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "A published chapter that runs on your computer",
+    "section": "",
+    "text": "This is a proof of concept for publishing a normal .qmd chapter with active R chunks. The page itself is static and hosted on GitHub Pages. When you press Run, the visible code executes in the R installation on your computer and the fresh result returns to this page."
+  },
+  {
+    "objectID": "index.html#start-local-carmar",
+    "href": "index.html#start-local-carmar",
+    "title": "A published chapter that runs on your computer",
+    "section": "Start local CarmaR",
+    "text": "Start local CarmaR\nRun these two lines once in your R console:\nsource(\"https://mohsaqr.github.io/carmar-runnable-book-poc/install.R\")\ncarmar::run(open = FALSE, new = FALSE)\nThen press Run on my computer above the first active chunk. CarmaR opens a small local consent window naming this site. Keep it open while using the chapter. Nothing executes until you press a chunk’s Run button."
+  },
+  {
+    "objectID": "index.html#create-a-dataset",
+    "href": "index.html#create-a-dataset",
+    "title": "A published chapter that runs on your computer",
+    "section": "1. Create a dataset",
+    "text": "1. Create a dataset\nThis first chunk creates data in your local R session. Click Edit if you want to change it before running.\n\nset.seed(2026)\nstudy &lt;- data.frame(\n  learner = paste0(\"L\", 1:12),\n  group = rep(c(\"practice\", \"comparison\"), each = 6),\n  score_before = round(rnorm(12, 62, 7), 1)\n)\nstudy$score_after &lt;- round(\n  study$score_before + ifelse(study$group == \"practice\", 9, 3) + rnorm(12, 0, 2),\n  1\n)\nstudy"
+  },
+  {
+    "objectID": "index.html#continue-in-the-same-r-session",
+    "href": "index.html#continue-in-the-same-r-session",
+    "title": "A published chapter that runs on your computer",
+    "section": "2. Continue in the same R session",
+    "text": "2. Continue in the same R session\nCells share state. This chunk uses study, which was created above.\n\naggregate(\n  cbind(score_before, score_after) ~ group,\n  data = study,\n  FUN = mean\n)"
+  },
+  {
+    "objectID": "index.html#produce-a-real-local-plot",
+    "href": "index.html#produce-a-real-local-plot",
+    "title": "A published chapter that runs on your computer",
+    "section": "3. Produce a real local plot",
+    "text": "3. Produce a real local plot\nThe PNG is drawn by your installed R—not by JavaScript or webR—and returned to the published chapter.\n\ncols &lt;- ifelse(study$group == \"practice\", \"#2859c5\", \"#e28a2b\")\nplot(\n  study$score_before,\n  study$score_after,\n  pch = 19,\n  col = cols,\n  xlab = \"Score before\",\n  ylab = \"Score after\",\n  main = \"Learning gains\"\n)\nabline(0, 1, lty = 2, col = \"grey50\")\nlegend(\n  \"topleft\",\n  legend = c(\"Practice\", \"Comparison\"),\n  col = c(\"#2859c5\", \"#e28a2b\"),\n  pch = 19,\n  bty = \"n\"\n)"
+  },
+  {
+    "objectID": "index.html#fit-a-model-with-base-r",
+    "href": "index.html#fit-a-model-with-base-r",
+    "title": "A published chapter that runs on your computer",
+    "section": "4. Fit a model with base R",
+    "text": "4. Fit a model with base R\nNo optional packages are needed for this proof.\n\nfit &lt;- lm(score_after ~ score_before + group, data = study)\ncoef(summary(fit))"
+  },
+  {
+    "objectID": "index.html#what-this-proves",
+    "href": "index.html#what-this-proves",
+    "title": "A published chapter that runs on your computer",
+    "section": "What this proves",
+    "text": "What this proves\n\nThe source remains an ordinary Quarto .qmd file.\nThe published result remains static HTML suitable for GitHub Pages.\nEvery visible R chunk receives Edit and Run controls.\nCells execute sequentially in one local R session.\nConsole output, data frames, errors, warnings, and plots return inline.\nThe public site never receives direct access to the loopback WebSocket.\n\nR code is not sandboxed: inspect unfamiliar chunks before running them. The local bridge disconnects when you close its small CarmaR window or stop the kernel."
+  }
+]

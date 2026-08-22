@@ -1,0 +1,105 @@
+---
+title: "A published chapter that runs on your computer"
+subtitle: "Static Quarto HTML · active R chunks · your local CarmaR engine"
+---
+
+This is a proof of concept for publishing a normal `.qmd` chapter with active
+R chunks. The page itself is static and hosted on GitHub Pages. When you press
+**Run**, the visible code executes in the R installation on your computer and
+the fresh result returns to this page.
+
+## Start local CarmaR
+
+Run these two lines once in your R console:
+
+```r
+source("https://mohsaqr.github.io/carmar-runnable-book-poc/install.R")
+carmar::run(open = FALSE, new = FALSE)
+```
+
+Then press **Run on my computer** above the first active chunk. CarmaR opens a
+small local consent window naming this site. Keep it open while using the
+chapter. Nothing executes until you press a chunk's **Run** button.
+
+## 1. Create a dataset
+
+This first chunk creates data in your local R session. Click **Edit** if you
+want to change it before running.
+
+```{r}
+#| eval: false
+set.seed(2026)
+study <- data.frame(
+  learner = paste0("L", 1:12),
+  group = rep(c("practice", "comparison"), each = 6),
+  score_before = round(rnorm(12, 62, 7), 1)
+)
+study$score_after <- round(
+  study$score_before + ifelse(study$group == "practice", 9, 3) + rnorm(12, 0, 2),
+  1
+)
+study
+```
+
+## 2. Continue in the same R session
+
+Cells share state. This chunk uses `study`, which was created above.
+
+```{r}
+#| eval: false
+aggregate(
+  cbind(score_before, score_after) ~ group,
+  data = study,
+  FUN = mean
+)
+```
+
+## 3. Produce a real local plot
+
+The PNG is drawn by your installed R—not by JavaScript or webR—and returned to
+the published chapter.
+
+```{r}
+#| eval: false
+cols <- ifelse(study$group == "practice", "#2859c5", "#e28a2b")
+plot(
+  study$score_before,
+  study$score_after,
+  pch = 19,
+  col = cols,
+  xlab = "Score before",
+  ylab = "Score after",
+  main = "Learning gains"
+)
+abline(0, 1, lty = 2, col = "grey50")
+legend(
+  "topleft",
+  legend = c("Practice", "Comparison"),
+  col = c("#2859c5", "#e28a2b"),
+  pch = 19,
+  bty = "n"
+)
+```
+
+## 4. Fit a model with base R
+
+No optional packages are needed for this proof.
+
+```{r}
+#| eval: false
+fit <- lm(score_after ~ score_before + group, data = study)
+coef(summary(fit))
+```
+
+## What this proves
+
+- The source remains an ordinary Quarto `.qmd` file.
+- The published result remains static HTML suitable for GitHub Pages.
+- Every visible R chunk receives **Edit** and **Run** controls.
+- Cells execute sequentially in one local R session.
+- Console output, data frames, errors, warnings, and plots return inline.
+- The public site never receives direct access to the loopback WebSocket.
+
+R code is not sandboxed: inspect unfamiliar chunks before running them. The
+local bridge disconnects when you close its small CarmaR window or stop the
+kernel.
