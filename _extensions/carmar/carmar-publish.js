@@ -11366,12 +11366,12 @@ ${xref}
   var CONNECT_TIMEOUT_MS = 2e4;
   var RETRY_MS = 500;
   var PUBLISHED_CSS = `
-.cn-root.carmar-published-root{min-height:0;background:transparent;color:inherit;font-size:inherit;margin:.65rem 0 1rem;}
-.carmar-published-root .cell.carmar-code-cell{margin:0;background:var(--cn-surface);border:1px solid var(--cn-border);border-radius:var(--cn-radius-md);box-shadow:var(--cn-shadow-sm);overflow:hidden;}
+.cn-root.carmar-published-root{min-height:0;background:transparent;color:inherit;font-size:inherit;margin:.65rem 0 1rem;display:block;}
+.carmar-published-root .cell.carmar-code-cell{margin:0;width:100%;grid-column:auto;background:var(--cn-surface);border:1px solid var(--cn-border);border-radius:var(--cn-radius-md);box-shadow:var(--cn-shadow-sm);overflow:hidden;}
 .carmar-published-root .cell-form{padding:10px;}
 .carmar-published-root .cell-result{padding:0 10px 10px;}
 .carmar-published-root .carmar-original-source{display:none!important;}
-.cn-root.carmar-published-session-root{min-height:0;background:transparent;margin:1rem 0;position:sticky;top:calc(var(--carmar-published-sticky-top, 0px) + .65rem);z-index:1015;}
+.cn-root.carmar-published-session-root{min-height:0;background:transparent;margin:1rem 0;position:static;}
 .carmar-published-session{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--cn-border);border-radius:var(--cn-radius-md);background:var(--cn-surface);box-shadow:var(--cn-shadow-sm);}
 .carmar-published-session .carmar-runtime-state{margin:0;min-width:190px;}
 .carmar-published-session-copy{flex:1 1 250px;color:var(--cn-text-muted);font-size:var(--cn-fs-sm);}
@@ -11624,13 +11624,6 @@ ${PUBLISHED_CSS}`;
     const titleBlock = doc.querySelector("#title-block-header");
     if (titleBlock?.parentElement) titleBlock.after(root);
     else firstRoot.before(root);
-    const fixedHeader = doc.querySelector(".navbar.fixed-top, header.fixed-top");
-    if (fixedHeader) {
-      root.style.setProperty(
-        "--carmar-published-sticky-top",
-        `${Math.ceil(fixedHeader.getBoundingClientRect().height)}px`
-      );
-    }
     const setStatus = (next, text) => {
       bar.dataset.state = next;
       title.textContent = next === "ready" ? "CarmaR connected" : next === "connecting" ? "Connecting to CarmaR" : "CarmaR not connected";
